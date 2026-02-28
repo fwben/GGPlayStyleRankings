@@ -44,7 +44,6 @@
     max-width: 1300px; margin: 6px auto 0; padding: 0 32px;
     font-size: 10px; font-family: 'JetBrains Mono', monospace;
     color: rgba(46,204,113,0.4); text-align: right; min-height: 16px;
-    transition: color 0.3s;
   }
 
   .container { max-width: 1300px; margin: 0 auto; padding: 16px 32px; }
@@ -260,6 +259,9 @@
   .btn-submit:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: default; }
   .btn-submit:not(:disabled) { color: #fff; }
   .btn-submit:not(:disabled):hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-submit.sending {
+    opacity: 0.7; pointer-events: none;
+  }
   .submitted-banner {
     padding: 12px 20px; border-radius: 8px; background: rgba(46,204,113,0.1);
     border: 1px solid rgba(46,204,113,0.3); color: #2ecc71; font-size: 14px;
@@ -343,16 +345,15 @@
   </div>
 </div>
 
-<div class="footer">FUT.GG PlayStyle Ranking Tool v5 — GG Rating Research</div>
+<div class="footer">FUT.GG PlayStyle Ranking Tool v6 — GG Rating Research</div>
 
 <script>
 // ══════════════════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════════════════
 const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1477373917030252576/J4KqVpeQFvfBdy3WQ82lGZIWI7TUivtSGulx_vM0Qqc23om7WDTcQwTszNaubqJrEp0r";
-const SHEETS_WEBHOOK = "https://script.google.com/macros/s/AKfycby2eADob3WUJfBEuJeUsz2mqUPIaYaDPE04S7k_f3C9aS28B6IkafFaybnjj2BW2qIwLA/exec";
 const MIN_PS = 20;
-const STORAGE_KEY = "futgg_ps_ranking_v5";
+const STORAGE_KEY = "futgg_ps_ranking_v6";
 
 // ══════════════════════════════════════════════════════════════════════
 // PLAYSTYLE DATA
@@ -448,8 +449,6 @@ const UNUSED_ROLES = [
 // ══════════════════════════════════════════════════════════════════════
 let state = { activeTab: 0, rankings: {}, submitted: {} };
 POSITIONS.forEach(p => { state.rankings[p.id] = []; state.submitted[p.id] = false; });
-
-// Drag state (not persisted)
 let dragFrom = null, dragTarget = null;
 
 // ══════════════════════════════════════════════════════════════════════
@@ -457,14 +456,12 @@ let dragFrom = null, dragTarget = null;
 // ══════════════════════════════════════════════════════════════════════
 function saveState() {
   try {
-    const name = document.getElementById('respondentName')?.value || '';
     const data = {
-      name: name,
+      name: document.getElementById('respondentName')?.value || '',
       activeTab: state.activeTab,
       submitted: state.submitted,
       rankings: {}
     };
-    // Serialize rankings (strip psData circular refs)
     POSITIONS.forEach(p => {
       data.rankings[p.id] = state.rankings[p.id].map(item => ({
         id: item.id, isPlus: item.isPlus, psName: item.psData.name, category: item.category, color: item.color
@@ -480,13 +477,9 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return false;
     const data = JSON.parse(raw);
-    if (data.name) {
-      document.getElementById('respondentName').value = data.name;
-    }
+    if (data.name) document.getElementById('respondentName').value = data.name;
     state.activeTab = data.activeTab || 0;
     state.submitted = data.submitted || {};
-
-    // Rebuild rankings with psData references
     POSITIONS.forEach(p => {
       const saved = data.rankings?.[p.id] || [];
       state.rankings[p.id] = saved.map(item => {
@@ -503,13 +496,12 @@ function loadState() {
 function showSave(msg) {
   const el = document.getElementById('saveStatus');
   el.textContent = msg;
-  el.style.color = 'rgba(46,204,113,0.5)';
   clearTimeout(el._t);
   el._t = setTimeout(() => { el.textContent = ''; }, 2000);
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// SVG / ICON HELPERS
+// SVG / ICON
 // ══════════════════════════════════════════════════════════════════════
 let gc = 0;
 function shapeSVG(plus, sz) {
@@ -521,24 +513,41 @@ function shapeSVG(plus, sz) {
 }
 
 function psIcon(ps, plus, sz=50) {
-  const c = plus ? "plus-img" : "base-img", l = ps.name + (plus?"+":"");
-  const w = sz > 40 ? "ps-icon-wrap" : "rank-item-icon";
+  const c = plus?"plus-img":"base-img", l = ps.name+(plus?"+":"");
+  const w = sz>40?"ps-icon-wrap":"rank-item-icon";
   return `<div class="${w}" style="width:${sz}px;height:${sz}px">${shapeSVG(plus,sz)}<img src="${IMG}/${ps.img}.png" class="${c}" alt="${l}">${sz>40?`<div class="ps-icon-label">${l}</div>`:''}</div>`;
 }
 
-function pid(n, p) { return n + (p ? '+' : ''); }
+function pid(n, p) { return n+(p?'+':''); }
 function catsFor(pos) { return pos.isGK ? GK_CATS : OUTFIELD_CATS; }
 function findPS(name) {
-  for (const c of ALL_CATS) { const f = c.playstyles.find(p=>p.name===name); if(f) return {psData:f,category:c.name,color:c.color}; }
+  for (const c of ALL_CATS) { const f=c.playstyles.find(p=>p.name===name); if(f) return {psData:f,category:c.name,color:c.color}; }
   return null;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// CSV BUILDER
+// ══════════════════════════════════════════════════════════════════════
+function buildCumulativeCSV() {
+  const name = document.getElementById('respondentName').value.trim();
+  let rows = ['Respondent,Archetype,Rank,PlayStyle,Category,IsPlus'];
+  POSITIONS.forEach(pos => {
+    if (state.submitted[pos.id]) {
+      state.rankings[pos.id].forEach((item, idx) => {
+        const psName = item.id.replace(/,/g, '');
+        rows.push(`${name},${pos.name},${idx+1},${psName},${item.category},${item.isPlus?'TRUE':'FALSE'}`);
+      });
+    }
+  });
+  return rows.join('\n');
 }
 
 // ══════════════════════════════════════════════════════════════════════
 // RENDER
 // ══════════════════════════════════════════════════════════════════════
 function renderProgress() {
-  const t = POSITIONS.length, d = POSITIONS.filter(p=>state.submitted[p.id]).length;
-  const pct = Math.round((d/t)*100);
+  const t=POSITIONS.length, d=POSITIONS.filter(p=>state.submitted[p.id]).length;
+  const pct=Math.round((d/t)*100);
   document.getElementById('progressLabel').textContent = `${d} / ${t} archetypes submitted`;
   document.getElementById('progressPct').textContent = `${pct}%`;
   document.getElementById('progressFill').style.width = `${pct}%`;
@@ -546,12 +555,12 @@ function renderProgress() {
 
 function renderTabs() {
   document.getElementById('tabs').innerHTML = POSITIONS.map((p,i) => {
-    const a = i === state.activeTab;
-    const bg = a ? p.accent : 'rgba(255,255,255,0.06)';
-    const tc = a ? '#fff' : 'rgba(255,255,255,0.3)';
-    let dot = 'transparent';
-    if (state.submitted[p.id]) dot = '#2ecc71';
-    else if (state.rankings[p.id].length > 0) dot = '#d4af37';
+    const a=i===state.activeTab;
+    const bg=a?p.accent:'rgba(255,255,255,0.06)';
+    const tc=a?'#fff':'rgba(255,255,255,0.3)';
+    let dot='transparent';
+    if(state.submitted[p.id]) dot='#2ecc71';
+    else if(state.rankings[p.id].length>0) dot='#d4af37';
     return `<div class="tab ${a?'active':''}" onclick="switchTab(${i})"><span class="tab-badge" style="background:${bg};color:${tc}">${p.label}</span><span class="tab-label">${p.name}</span><span class="tab-status-dot" style="background:${dot}"></span></div>`;
   }).join('');
 }
@@ -559,22 +568,20 @@ function renderTabs() {
 function renderPanels() {
   gc = 0;
   document.getElementById('panels').innerHTML = POSITIONS.map((pos, i) => {
-    const act = i === state.activeTab;
+    const act = i===state.activeTab;
     if (!act) return `<div class="panel"></div>`;
     const ranking = state.rankings[pos.id];
     const rids = new Set(ranking.map(r=>r.id));
     const cats = catsFor(pos);
 
-    // Top bar
     const others = POSITIONS.filter(p=>p.id!==pos.id && state.rankings[p.id].length>0);
     let copyHTML = '';
-    if (!state.submitted[pos.id] && others.length > 0) {
+    if (!state.submitted[pos.id] && others.length>0) {
       const opts = others.map(p=>`<option value="${p.id}">${p.name} (${state.rankings[p.id].length})</option>`).join('');
       copyHTML = `<div class="copy-ranking-box"><span class="copy-label">⚡ Copy ranking from</span><select onchange="copyRanking('${pos.id}',this.value);this.selectedIndex=0"><option value="">Select archetype...</option>${opts}</select><span class="copy-hint">Copies as starting point — adjust after</span></div>`;
     }
     const topBar = `<div class="top-bar"><div class="archetype-desc">${pos.desc}<div class="archetype-roles">${pos.roles.map(r=>`<span class="archetype-role">${r}</span>`).join('')}</div></div>${copyHTML}</div>`;
 
-    // Pool
     let poolHTML = '';
     cats.forEach(cat => {
       let base='', plus='';
@@ -586,57 +593,43 @@ function renderPanels() {
       poolHTML += `<div class="category"><div class="category-header"><span class="category-bar" style="background:${cat.color}"></span><span class="category-name" style="color:${cat.color}">${cat.name}</span><button class="category-add-all" onmouseover="this.style.color='${cat.color}'" onmouseout="this.style.color=''" onclick="addCat('${pos.id}','${cat.name}')">Add all</button></div><div class="ps-row">${base}</div><div class="ps-row">${plus}</div></div>`;
     });
 
-    // Ranking
     let rankHTML = '';
     if (!ranking.length) {
       rankHTML = `<div class="rank-empty"><div class="icon">☰</div>Click playstyles to build your ranking.<div class="sub">Most important at top. Minimum ${MIN_PS} to submit.</div></div>`;
     } else {
       rankHTML = `<div class="rank-list" id="rl_${pos.id}">`;
       ranking.forEach((item,idx) => {
-        const nc = item.isPlus?'plus':'base';
-        const eid = item.id.replace(/'/g,"\\'");
-        rankHTML += `<div class="rank-item" draggable="true" data-idx="${idx}"
-          ondragstart="dStart(event,'${pos.id}',${idx})"
-          ondragover="dOver(event,'${pos.id}',${idx})"
-          ondragleave="dLeave(event)"
-          ondrop="dDrop(event,'${pos.id}')"
-          ondragend="dEnd(event,'${pos.id}')">
-          <span class="rank-num">${idx+1}</span><span class="rank-grip">⋮⋮</span>
-          ${psIcon(item.psData,item.isPlus,30)}
-          <span class="rank-item-name ${nc}">${item.id}</span>
-          <span class="rank-cat-label" style="color:${item.color}">${item.category}</span>
-          <div class="rank-arrows"><button onclick="mu('${pos.id}',${idx})" ${idx===0?'disabled':''}>▲</button><button onclick="md('${pos.id}',${idx})" ${idx===ranking.length-1?'disabled':''}>▼</button></div>
-          <button class="rank-btn-remove" onclick="rm('${pos.id}','${eid}')" title="Remove">✕</button>
-        </div>`;
+        const nc=item.isPlus?'plus':'base';
+        const eid=item.id.replace(/'/g,"\\'");
+        rankHTML += `<div class="rank-item" draggable="true" data-idx="${idx}" ondragstart="dStart(event,'${pos.id}',${idx})" ondragover="dOver(event,'${pos.id}',${idx})" ondragleave="dLeave(event)" ondrop="dDrop(event,'${pos.id}')" ondragend="dEnd(event,'${pos.id}')"><span class="rank-num">${idx+1}</span><span class="rank-grip">⋮⋮</span>${psIcon(item.psData,item.isPlus,30)}<span class="rank-item-name ${nc}">${item.id}</span><span class="rank-cat-label" style="color:${item.color}">${item.category}</span><div class="rank-arrows"><button onclick="mu('${pos.id}',${idx})" ${idx===0?'disabled':''}>▲</button><button onclick="md('${pos.id}',${idx})" ${idx===ranking.length-1?'disabled':''}>▼</button></div><button class="rank-btn-remove" onclick="rm('${pos.id}','${eid}')" title="Remove">✕</button></div>`;
       });
       rankHTML += `<div class="rank-drop-end" id="de_${pos.id}" ondragover="dOverEnd(event,'${pos.id}')" ondragleave="dLeaveEnd(event,'${pos.id}')" ondrop="dDrop(event,'${pos.id}')"></div></div>`;
     }
 
-    // Submit
-    const name = document.getElementById('respondentName')?.value?.trim()||'';
-    const count = ranking.length;
-    const meetsMin = count >= MIN_PS;
-    const canSubmit = meetsMin && name.length > 0;
-    let subHTML = '';
-    if (state.submitted[pos.id]) {
-      subHTML = `<div class="submitted-banner">✓ Submitted — ${pos.name}</div>`;
+    const name=document.getElementById('respondentName')?.value?.trim()||'';
+    const count=ranking.length;
+    const meetsMin=count>=MIN_PS;
+    const canSubmit=meetsMin&&name.length>0;
+    let subHTML='';
+    if(state.submitted[pos.id]){
+      subHTML=`<div class="submitted-banner">✓ Submitted — ${pos.name}</div>`;
     } else {
       let lbl;
-      if (!name) lbl = 'Enter your name to submit';
-      else if (!meetsMin) lbl = `Need ${MIN_PS - count} more (${count}/${MIN_PS} minimum)`;
-      else lbl = `Submit ${pos.name} (${count} PlayStyles)`;
-      subHTML = `<button class="btn-submit" ${!canSubmit?'disabled':''} style="${canSubmit?`background:linear-gradient(135deg,${pos.accent},${pos.accent}cc)`:''}" onclick="submitArchetype('${pos.id}')">${lbl}</button>`;
+      if(!name) lbl='Enter your name to submit';
+      else if(!meetsMin) lbl=`Need ${MIN_PS-count} more (${count}/${MIN_PS} minimum)`;
+      else lbl=`Submit ${pos.name} (${count} PlayStyles)`;
+      subHTML=`<button class="btn-submit" id="sb_${pos.id}" ${!canSubmit?'disabled':''} style="${canSubmit?`background:linear-gradient(135deg,${pos.accent},${pos.accent}cc)`:''}" onclick="submitArchetype('${pos.id}')">${lbl}</button>`;
     }
     subHTML += `<div class="submit-feedback" id="sf_${pos.id}"></div>`;
 
     return `<div class="panel active">${topBar}<div class="panel-content"><div class="pool-side"><div class="pool-header"><h3>Available PlayStyles</h3><span>Click to add →</span></div>${poolHTML}</div><div class="rank-side"><div class="rank-header"><h3>Your Ranking — ${count} PS</h3>${count>0?`<button class="btn-clear" onclick="clr('${pos.id}')">Clear all</button>`:''}</div>${rankHTML}<div class="submit-area">${subHTML}</div></div></div></div>`;
   }).join('');
 
-  const allDone = Object.values(state.submitted).every(Boolean);
-  const banner = document.getElementById('completionBanner');
-  if (allDone) {
+  const allDone=Object.values(state.submitted).every(Boolean);
+  const banner=document.getElementById('completionBanner');
+  if(allDone){
     banner.classList.add('show');
-    document.getElementById('completionText').textContent = `Thank you, ${document.getElementById('respondentName').value.trim()}! All rankings have been sent. You can download a backup below.`;
+    document.getElementById('completionText').textContent=`Thank you, ${document.getElementById('respondentName').value.trim()}! All rankings have been sent.`;
   } else banner.classList.remove('show');
 }
 
@@ -645,14 +638,14 @@ function render() { renderProgress(); renderTabs(); renderPanels(); }
 // ══════════════════════════════════════════════════════════════════════
 // ACTIONS
 // ══════════════════════════════════════════════════════════════════════
-function switchTab(i) { state.activeTab = i; render(); saveState(); }
+function switchTab(i) { state.activeTab=i; render(); saveState(); }
 
 function addPS(posId, name, isPlus) {
   if(state.submitted[posId]) return;
-  const id = pid(name,isPlus);
+  const id=pid(name,isPlus);
   if(state.rankings[posId].some(r=>r.id===id)) return;
-  const info = findPS(name); if(!info) return;
-  state.rankings[posId].push({id, isPlus, psData:info.psData, category:info.category, color:info.color});
+  const info=findPS(name); if(!info) return;
+  state.rankings[posId].push({id,isPlus,psData:info.psData,category:info.category,color:info.color});
   render(); saveState();
 }
 
@@ -663,8 +656,8 @@ function clr(posId) { if(state.submitted[posId]) return; state.rankings[posId]=[
 
 function addCat(posId, catName) {
   if(state.submitted[posId]) return;
-  const cat = ALL_CATS.find(c=>c.name===catName); if(!cat) return;
-  const rids = new Set(state.rankings[posId].map(r=>r.id));
+  const cat=ALL_CATS.find(c=>c.name===catName); if(!cat) return;
+  const rids=new Set(state.rankings[posId].map(r=>r.id));
   cat.playstyles.forEach(ps=>{
     [false,true].forEach(isPlus=>{
       const id=pid(ps.name,isPlus);
@@ -688,205 +681,152 @@ function copyRanking(targetId, sourceId) {
 // DRAG & DROP
 // ══════════════════════════════════════════════════════════════════════
 function clearInsert(posId) {
-  const rl = document.getElementById(`rl_${posId}`); if(!rl) return;
-  rl.querySelectorAll('.rank-item').forEach(el => el.classList.remove('insert-above'));
-  const de = document.getElementById(`de_${posId}`);
+  const rl=document.getElementById(`rl_${posId}`); if(!rl) return;
+  rl.querySelectorAll('.rank-item').forEach(el=>el.classList.remove('insert-above'));
+  const de=document.getElementById(`de_${posId}`);
   if(de) de.classList.remove('insert-here');
 }
 
 function dStart(e, posId, idx) {
-  dragFrom = idx;
-  e.dataTransfer.effectAllowed = 'move';
+  dragFrom=idx;
+  e.dataTransfer.effectAllowed='move';
   e.dataTransfer.setData('text/plain', idx);
-  requestAnimationFrame(() => {
-    const el = e.target.closest('.rank-item');
-    if(el) el.classList.add('dragging');
-  });
+  requestAnimationFrame(()=>{const el=e.target.closest('.rank-item');if(el)el.classList.add('dragging');});
 }
 
 function dOver(e, posId, idx) {
   e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  if(dragFrom === null) return;
+  e.dataTransfer.dropEffect='move';
+  if(dragFrom===null) return;
   clearInsert(posId);
-
-  const rect = e.currentTarget.getBoundingClientRect();
-  const above = e.clientY < rect.top + rect.height / 2;
-  let insertAt = above ? idx : idx + 1;
-
-  // Skip no-op positions
-  if(insertAt === dragFrom || insertAt === dragFrom + 1) {
-    dragTarget = null;
-    return;
-  }
-
-  dragTarget = insertAt;
-
-  // Show indicator
-  if(above) {
-    e.currentTarget.classList.add('insert-above');
-  } else {
-    const next = e.currentTarget.nextElementSibling;
-    if(next && next.classList.contains('rank-item')) {
-      next.classList.add('insert-above');
-    } else {
-      const de = document.getElementById(`de_${posId}`);
-      if(de) de.classList.add('insert-here');
-    }
+  const rect=e.currentTarget.getBoundingClientRect();
+  const above=e.clientY<rect.top+rect.height/2;
+  let insertAt=above?idx:idx+1;
+  if(insertAt===dragFrom||insertAt===dragFrom+1){dragTarget=null;return;}
+  dragTarget=insertAt;
+  if(above){e.currentTarget.classList.add('insert-above');}
+  else{
+    const next=e.currentTarget.nextElementSibling;
+    if(next&&next.classList.contains('rank-item')){next.classList.add('insert-above');}
+    else{const de=document.getElementById(`de_${posId}`);if(de)de.classList.add('insert-here');}
   }
 }
 
 function dLeave(e) {
-  const r = e.currentTarget.getBoundingClientRect();
-  if(e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+  const r=e.currentTarget.getBoundingClientRect();
+  if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)
     e.currentTarget.classList.remove('insert-above');
-  }
 }
 
 function dOverEnd(e, posId) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  if(dragFrom === null) return;
+  e.preventDefault(); e.dataTransfer.dropEffect='move';
+  if(dragFrom===null) return;
   clearInsert(posId);
-  const len = state.rankings[posId].length;
-  if(dragFrom === len - 1) { dragTarget = null; return; }
-  dragTarget = len;
-  const de = document.getElementById(`de_${posId}`);
+  const len=state.rankings[posId].length;
+  if(dragFrom===len-1){dragTarget=null;return;}
+  dragTarget=len;
+  const de=document.getElementById(`de_${posId}`);
   if(de) de.classList.add('insert-here');
 }
 
 function dLeaveEnd(e, posId) {
-  const de = document.getElementById(`de_${posId}`);
+  const de=document.getElementById(`de_${posId}`);
   if(de) de.classList.remove('insert-here');
 }
 
 function dDrop(e, posId) {
   e.preventDefault();
   clearInsert(posId);
-  if(dragFrom === null || dragTarget === null || state.submitted[posId]) { dReset(posId); return; }
-  const arr = state.rankings[posId];
-  const [item] = arr.splice(dragFrom, 1);
-  let to = dragTarget;
-  if(to > dragFrom) to--;
-  arr.splice(to, 0, item);
-  dReset(posId); render(); saveState();
+  if(dragFrom===null||dragTarget===null||state.submitted[posId]){dReset();return;}
+  const arr=state.rankings[posId];
+  const[item]=arr.splice(dragFrom,1);
+  let to=dragTarget;
+  if(to>dragFrom) to--;
+  arr.splice(to,0,item);
+  dReset(); render(); saveState();
 }
 
-function dEnd(e, posId) {
-  clearInsert(posId);
-  dReset(posId);
-}
-
-function dReset() {
-  dragFrom = null; dragTarget = null;
-  document.querySelectorAll('.rank-item.dragging').forEach(el => el.classList.remove('dragging'));
-}
+function dEnd(e, posId) { clearInsert(posId); dReset(); }
+function dReset() { dragFrom=null; dragTarget=null; document.querySelectorAll('.rank-item.dragging').forEach(el=>el.classList.remove('dragging')); }
 
 // ══════════════════════════════════════════════════════════════════════
-// SUBMIT & WEBHOOKS
+// SUBMIT — Discord embed + cumulative CSV attachment
 // ══════════════════════════════════════════════════════════════════════
 async function submitArchetype(posId) {
-  const name = document.getElementById('respondentName').value.trim();
-  const ranking = state.rankings[posId];
-  if(!name || ranking.length < MIN_PS) return;
+  const name=document.getElementById('respondentName').value.trim();
+  const ranking=state.rankings[posId];
+  if(!name||ranking.length<MIN_PS) return;
 
-  const pos = POSITIONS.find(p=>p.id===posId);
-  const doneCount = POSITIONS.filter(p=>state.submitted[p.id]).length + 1;
-  const totalCount = POSITIONS.length;
+  const pos=POSITIONS.find(p=>p.id===posId);
+  const btn=document.getElementById(`sb_${posId}`);
+  if(btn){btn.classList.add('sending');btn.textContent='Sending...';}
 
-  // Build payload
-  const payload = {
-    respondent: name,
-    archetype: pos.name,
-    archetype_id: pos.id,
-    roles: pos.roles,
-    submitted_at: new Date().toISOString(),
-    rankings: ranking.map((item,idx) => ({
-      rank: idx+1, playstyle: item.id, category: item.category, is_plus: item.isPlus
-    }))
+  // Mark submitted
+  state.submitted[posId]=true;
+  saveState();
+
+  const doneCount=POSITIONS.filter(p=>state.submitted[p.id]).length;
+  const totalCount=POSITIONS.length;
+
+  // Build Discord embed
+  const rankList=ranking.slice(0,20).map((item,idx)=>`**${idx+1}.** ${item.id}`).join('\n');
+  const more=ranking.length>20?`\n_...and ${ranking.length-20} more_`:'';
+
+  const embed = {
+    title: `📊 ${pos.name}`,
+    description: `**${name}** submitted rankings (${doneCount}/${totalCount} archetypes)\n\n${rankList}${more}`,
+    color: parseInt(pos.accent.replace('#',''),16),
+    footer: { text: `${ranking.length} PlayStyles ranked` },
+    timestamp: new Date().toISOString()
   };
 
-  // Mark submitted immediately
-  state.submitted[posId] = true;
-  render(); saveState();
+  // Build cumulative CSV
+  const csv = buildCumulativeCSV();
+  const csvBlob = new Blob([csv], {type:'text/csv'});
+  const csvFile = new File([csvBlob], `${name.replace(/\s+/g,'_')}_rankings_${doneCount}of${totalCount}.csv`, {type:'text/csv'});
 
-  const fb = document.getElementById(`sf_${posId}`);
+  // Send via multipart/form-data (embed + file)
+  const formData = new FormData();
+  formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
+  formData.append('files[0]', csvFile);
 
-  // Discord webhook
+  const fb=document.getElementById(`sf_${posId}`);
+
   try {
-    const rankList = ranking.slice(0, 15).map((item,idx) =>
-      `**${idx+1}.** ${item.id}`
-    ).join('\n');
-    const more = ranking.length > 15 ? `\n_...and ${ranking.length - 15} more_` : '';
-
-    await fetch(DISCORD_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        embeds: [{
-          title: `📊 ${pos.name}`,
-          description: `**${name}** submitted rankings (${doneCount}/${totalCount} archetypes)\n\nRoles: ${pos.roles.join(', ')}\n\n${rankList}${more}`,
-          color: parseInt(pos.accent.replace('#',''), 16),
-          footer: { text: `${ranking.length} PlayStyles ranked` },
-          timestamp: new Date().toISOString()
-        }]
-      })
-    });
-  } catch(err) { console.warn('Discord webhook failed:', err); }
-
-  // Google Sheets webhook
-  if (SHEETS_WEBHOOK) {
-    try {
-      await fetch(SHEETS_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        mode: 'no-cors',
-        body: JSON.stringify(payload)
-      });
-    } catch(err) { console.warn('Sheets webhook failed:', err); }
+    const resp = await fetch(DISCORD_WEBHOOK, { method: 'POST', body: formData });
+    if(resp.ok) {
+      if(fb){fb.className='submit-feedback success';fb.textContent='✓ Submitted and sent to server';}
+    } else {
+      throw new Error(`HTTP ${resp.status}`);
+    }
+  } catch(err) {
+    console.warn('Discord send failed:', err);
+    if(fb){fb.className='submit-feedback error';fb.textContent='⚠ Saved locally but server send failed — data is safe, we can retrieve it later';}
   }
 
-  // Feedback
-  if(fb) {
-    fb.className = 'submit-feedback success';
-    fb.textContent = '✓ Sent to server successfully';
-    setTimeout(() => { fb.style.display = 'none'; }, 3000);
-  }
-
-  // Auto-advance to next unsubmitted tab
-  const nextIdx = POSITIONS.findIndex(p => !state.submitted[p.id]);
-  if(nextIdx !== -1) {
-    setTimeout(() => { state.activeTab = nextIdx; render(); }, 800);
-  }
+  // Auto-advance after short delay
+  setTimeout(()=>{
+    const nextIdx=POSITIONS.findIndex(p=>!state.submitted[p.id]);
+    if(nextIdx!==-1) state.activeTab=nextIdx;
+    render();
+  }, 1000);
 }
 
 // Backup download
 function downloadAll() {
-  const name = document.getElementById('respondentName').value.trim();
-  const data = { respondent: name, submitted_at: new Date().toISOString(), tool_version: "5.0", archetypes: {} };
-  POSITIONS.forEach(pos => {
-    if(state.submitted[pos.id]) {
-      data.archetypes[pos.name] = {
-        archetype_id: pos.id, applies_to_roles: pos.roles,
-        rankings: state.rankings[pos.id].map((item,idx) => ({
-          rank: idx+1, playstyle: item.id, category: item.category, is_plus: item.isPlus
-        }))
-      };
-    }
-  });
-  data.unused_roles = UNUSED_ROLES;
-  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url = URL.createObjectURL(blob); const a = document.createElement('a');
-  a.href = url; a.download = `playstyle_ranking_${name.replace(/\s+/g,'_')}.json`; a.click();
+  const name=document.getElementById('respondentName').value.trim();
+  const csv=buildCumulativeCSV();
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`${name.replace(/\s+/g,'_')}_all_rankings.csv`;a.click();
   URL.revokeObjectURL(url);
 }
 
 // ══════════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════════
-document.getElementById('respondentName').addEventListener('input', () => { renderPanels(); saveState(); });
-
-const loaded = loadState();
+document.getElementById('respondentName').addEventListener('input',()=>{renderPanels();saveState();});
+const loaded=loadState();
 if(loaded) showSave('Previous session restored');
 render();
 </script>
