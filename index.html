@@ -447,7 +447,7 @@ const UNUSED_ROLES = [
 // ══════════════════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════════════════
-let state = { activeTab: 0, rankings: {}, submitted: {} };
+let state = { activeTab: 0, rankings: {}, submitted: {}, nameLocked: false };
 POSITIONS.forEach(p => { state.rankings[p.id] = []; state.submitted[p.id] = false; });
 let dragFrom = null, dragTarget = null;
 
@@ -460,6 +460,7 @@ function saveState() {
       name: document.getElementById('respondentName')?.value || '',
       activeTab: state.activeTab,
       submitted: state.submitted,
+      nameLocked: state.nameLocked,
       rankings: {}
     };
     POSITIONS.forEach(p => {
@@ -480,6 +481,11 @@ function loadState() {
     if (data.name) document.getElementById('respondentName').value = data.name;
     state.activeTab = data.activeTab || 0;
     state.submitted = data.submitted || {};
+    state.nameLocked = data.nameLocked || false;
+    if (state.nameLocked) {
+      const ni = document.getElementById('respondentName');
+      ni.disabled = true; ni.style.opacity = '0.5';
+    }
     POSITIONS.forEach(p => {
       const saved = data.rankings?.[p.id] || [];
       state.rankings[p.id] = saved.map(item => {
@@ -612,7 +618,7 @@ function renderPanels() {
     const canSubmit=meetsMin&&name.length>0;
     let subHTML='';
     if(state.submitted[pos.id]){
-      subHTML=`<div class="submitted-banner">✓ Submitted — ${pos.name}</div>`;
+      subHTML=`<div class="submitted-banner">✓ Submitted — ${pos.name} <button onclick="unlockArchetype('${pos.id}')" style="margin-left:12px;background:none;border:1px solid rgba(46,204,113,0.3);border-radius:4px;padding:3px 10px;font-size:11px;color:rgba(46,204,113,0.6);cursor:pointer;font-family:'JetBrains Mono',monospace">🔓 Unlock to edit</button></div>`;
     } else {
       let lbl;
       if(!name) lbl='Enter your name to submit';
@@ -666,6 +672,8 @@ function addCat(posId, catName) {
   });
   render(); saveState();
 }
+
+function unlockArchetype(posId) { state.submitted[posId]=false; render(); saveState(); }
 
 function copyRanking(targetId, sourceId) {
   if(!sourceId||state.submitted[targetId]) return;
@@ -761,8 +769,12 @@ async function submitArchetype(posId) {
   const btn=document.getElementById(`sb_${posId}`);
   if(btn){btn.classList.add('sending');btn.textContent='Sending...';}
 
-  // Mark submitted
+  // Mark submitted + lock name
   state.submitted[posId]=true;
+  state.nameLocked=true;
+  const nameInput=document.getElementById('respondentName');
+  nameInput.disabled=true;
+  nameInput.style.opacity='0.5';
   saveState();
 
   const doneCount=POSITIONS.filter(p=>state.submitted[p.id]).length;
