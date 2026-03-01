@@ -700,7 +700,7 @@ function renderPanels() {
           items.push(`<strong>⊘ Missing pairs:</strong> Each PlayStyle needs both its base and + version in your ranking.<ul class="fix-list">${missing}</ul>`);
         }
         if (warnings.baseAbovePlus > 0) {
-          items.push(`<strong>⚠ Ordering:</strong> A base PlayStyle is ranked higher than its + version. The + is always at least as good — drag it above the base, or remove the base.`);
+          items.push(`<strong>⚠ Ordering:</strong> A base PlayStyle is ranked higher than its + version. The + is always at least as good — drag it above the base.`);
         }
         explainerHTML = `<div class="submit-explainer">${items.join('<br>')}</div>`;
       }
