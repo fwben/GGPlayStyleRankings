@@ -13,898 +13,320 @@
     --bg-card: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.06);
     --text-primary: #e6e6e6; --text-secondary: rgba(255,255,255,0.55);
     --text-muted: rgba(255,255,255,0.3);
-    --gg-red: #e8442e; --gg-orange: #f26522; --gg-gold: #d4af37;
-    --cat-scoring: #e74c3c; --cat-passing: #3498db; --cat-defending: #2ecc71;
-    --cat-ballcontrol: #9b59b6; --cat-physical: #e67e22; --cat-gk: #00bcd4;
+    --gg-red: #e8442e; --gg-orange: #f26522; --gg-gold: #d4af37; --green: #2ecc71;
   }
   body {
     min-height: 100vh;
     background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
     color: var(--text-primary); font-family: 'DM Sans', sans-serif; line-height: 1.5;
+    -webkit-user-select: none; user-select: none;
   }
+
+  /* ── Header ── */
   .header { padding: 20px 32px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.4); }
   .header-inner { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
   .header-left { flex: 1; min-width: 280px; }
   .header-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-  .header-badge {
-    font-size: 10px; padding: 2px 8px; border-radius: 4px;
-    background: rgba(232,68,46,0.15); color: var(--gg-red);
-    font-family: 'JetBrains Mono', monospace; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1px;
-  }
-  .header h1 { font-size: 24px; font-weight: 300; font-family: 'Instrument Serif', serif; color: rgba(255,255,255,0.9); }
-  .header p { margin-top: 4px; font-size: 13px; color: var(--text-muted); max-width: 700px; }
-  .contact-btn {
-    display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px;
-    background: rgba(88,101,242,0.15); border: 1px solid rgba(88,101,242,0.35);
-    color: #7289da; text-decoration: none; font-size: 13px; font-weight: 600;
-    white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
-  }
+  .header-badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(232,68,46,0.15); color: var(--gg-red); font-family: 'JetBrains Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .header h1 { font-size: 24px; font-weight: 300; font-family: 'Instrument Serif', serif; color: #fff; }
+  .header p { margin-top: 4px; font-size: 13px; color: rgba(255,255,255,0.5); max-width: 700px; }
+  .contact-btn { display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; background: rgba(88,101,242,0.15); border: 1px solid rgba(88,101,242,0.35); color: #7289da; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
   .contact-btn:hover { background: rgba(88,101,242,0.25); border-color: rgba(88,101,242,0.5); }
 
+  /* ── Progress ── */
   .progress-area { max-width: 1300px; margin: 0 auto; padding: 16px 32px 0; }
   .progress-label { display: flex; justify-content: space-between; margin-bottom: 6px; }
-  .progress-label span { font-size: 11px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
+  .progress-label span { font-size: 11px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.6); }
   .progress-track { width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); overflow: hidden; }
   .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gg-red), var(--gg-orange)); transition: width 0.4s ease; }
+  .save-status { max-width: 1300px; margin: 6px auto 0; padding: 0 32px; font-size: 10px; font-family: 'JetBrains Mono', monospace; color: rgba(46,204,113,0.5); text-align: right; min-height: 16px; }
 
-  .save-status {
-    max-width: 1300px; margin: 6px auto 0; padding: 0 32px;
-    font-size: 10px; font-family: 'JetBrains Mono', monospace;
-    color: rgba(46,204,113,0.4); text-align: right; min-height: 16px;
-  }
-
+  /* ── Container / Name ── */
   .container { max-width: 1300px; margin: 0 auto; padding: 16px 32px; }
-  .name-bar {
-    margin-bottom: 20px; padding: 14px 20px; border-radius: 10px;
-    background: var(--bg-card); border: 1px solid var(--border);
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-  }
-  .name-bar label {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-weight: 600;
-  }
-  .name-bar input {
-    flex: 1; min-width: 200px; padding: 8px 14px; border-radius: 6px;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-    color: #fff; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none;
-  }
+  .name-bar { margin-bottom: 20px; padding: 14px 20px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .name-bar label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+  .name-bar input { flex: 1; min-width: 200px; padding: 8px 14px; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; }
   .name-bar input:focus { border-color: rgba(232,68,46,0.5); }
   .name-bar input::placeholder { color: rgba(255,255,255,0.2); }
 
-  .tabs {
-    display: flex; gap: 3px; margin-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap;
-  }
-  .tab {
-    padding: 8px 12px; border-radius: 7px 7px 0 0; background: transparent;
-    border: 1px solid transparent; border-bottom: 1px solid transparent;
-    margin-bottom: -1px; color: var(--text-muted); cursor: pointer;
-    font-size: 12px; font-family: 'DM Sans', sans-serif;
-    display: flex; align-items: center; gap: 6px; transition: all 0.15s; white-space: nowrap;
-  }
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 3px; margin-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .tab { padding: 8px 12px; border-radius: 7px 7px 0 0; background: transparent; border: 1px solid transparent; border-bottom: 1px solid transparent; margin-bottom: -1px; color: rgba(255,255,255,0.45); cursor: pointer; font-size: 12px; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 6px; transition: all 0.15s; white-space: nowrap; }
   .tab:hover { color: var(--text-secondary); }
-  .tab.active {
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
-    border-bottom-color: var(--bg-secondary); color: #fff;
-  }
-  .tab-badge {
-    padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: 700;
-    font-family: 'JetBrains Mono', monospace;
-  }
+  .tab.active { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-bottom-color: var(--bg-secondary); color: #fff; }
+  .tab-badge { padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
   .tab .tab-label { font-weight: 400; font-size: 11px; }
   .tab.active .tab-label { font-weight: 600; }
   .tab-status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
+  /* ── Top bar / Copy ── */
   .top-bar { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
-  .archetype-desc {
-    flex: 1 1 auto; padding: 8px 14px; border-radius: 8px;
-    background: rgba(232,68,46,0.06); border: 1px solid rgba(232,68,46,0.15);
-    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-  }
-  .archetype-role {
-    font-size: 10px; padding: 2px 8px; border-radius: 4px;
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono', monospace;
-  }
-  .copy-ranking-box {
-    flex: 0 0 auto; padding: 8px 14px; border-radius: 8px;
-    background: rgba(232,68,46,0.06); border: 1px solid rgba(232,68,46,0.2);
-    display: flex; align-items: center; gap: 10px;
-    animation: copyPulse 2.5s ease-in-out infinite;
-  }
-  @keyframes copyPulse {
-    0%, 100% { border-color: rgba(232,68,46,0.2); }
-    50% { border-color: rgba(232,68,46,0.5); }
-  }
-  .copy-ranking-box .copy-label {
-    font-size: 10px; color: var(--gg-red); font-family: 'JetBrains Mono', monospace;
-    font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
-  }
-  .copy-ranking-box select {
-    padding: 5px 28px 5px 10px; border-radius: 6px; font-size: 11px;
-    background: rgba(0,0,0,0.3); border: 1px solid rgba(232,68,46,0.3);
-    color: rgba(255,255,255,0.7); font-family: 'JetBrains Mono', monospace;
-    cursor: pointer; outline: none; appearance: none; -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23e8442e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 8px center;
-  }
+  .archetype-desc { flex: 1 1 auto; padding: 8px 14px; border-radius: 8px; background: rgba(232,68,46,0.06); border: 1px solid rgba(232,68,46,0.15); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .archetype-role { font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); font-family: 'JetBrains Mono', monospace; }
+  .copy-ranking-box { flex: 0 0 auto; padding: 8px 14px; border-radius: 8px; background: rgba(232,68,46,0.06); border: 1px solid rgba(232,68,46,0.2); display: flex; align-items: center; gap: 10px; animation: copyPulse 2.5s ease-in-out infinite; }
+  @keyframes copyPulse { 0%, 100% { border-color: rgba(232,68,46,0.2); } 50% { border-color: rgba(232,68,46,0.5); } }
+  .copy-ranking-box .copy-label { font-size: 10px; color: var(--gg-red); font-family: 'JetBrains Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+  .copy-ranking-box select { padding: 5px 28px 5px 10px; border-radius: 6px; font-size: 11px; background: rgba(0,0,0,0.3); border: 1px solid rgba(232,68,46,0.3); color: rgba(255,255,255,0.7); font-family: 'JetBrains Mono', monospace; cursor: pointer; outline: none; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23e8442e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
 
   .panel { display: none; }
   .panel.active { display: block; }
-  .panel-content { display: flex; gap: 24px; flex-wrap: wrap; }
-  .pool-side { flex: 1 1 460px; min-width: 340px; }
-  .rank-side { flex: 1 1 420px; min-width: 300px; }
 
-  .pool-header, .rank-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .pool-header h3, .rank-header h3 {
-    font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-weight: 600;
-  }
-  .pool-header span { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+  /* ── Category bar ── */
+  .cat-bar { padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; }
+  .cat-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .cat-name { font-size: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+  .cat-phase { font-size: 9px; font-family: 'JetBrains Mono', monospace; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1px; padding: 2px 7px; border-radius: 3px; background: rgba(255,255,255,0.06); }
+  .cat-count { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: rgba(255,255,255,0.5); margin-left: auto; }
+  .btn-add-all { padding: 4px 12px; border-radius: 5px; border: 1px solid rgba(232,68,46,0.2); background: rgba(232,68,46,0.08); color: var(--gg-red); font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600; cursor: pointer; transition: all .15s; margin-left: 6px; }
+  .btn-add-all:hover { background: rgba(232,68,46,0.15); border-color: rgba(232,68,46,0.3); }
+  .cat-items { display: flex; gap: 4px; flex-wrap: wrap; }
+  .cat-done-msg { padding: 8px 0; text-align: center; }
+  .cat-done-msg span { font-size: 11px; color: rgba(46,204,113,0.8); font-family: 'JetBrains Mono', monospace; }
+  .btn-next-cat { padding: 5px 14px; border-radius: 5px; border: 1px solid rgba(46,204,113,0.2); background: rgba(46,204,113,0.08); color: var(--green); font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600; cursor: pointer; transition: all .15s; margin-left: 10px; }
+  .btn-next-cat:hover { background: rgba(46,204,113,0.15); border-color: rgba(46,204,113,0.3); }
 
-  .category { margin-bottom: 14px; }
-  .category-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-  .category-bar { width: 4px; height: 14px; border-radius: 2px; }
-  .category-name {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 1.5px; font-family: 'JetBrains Mono', monospace;
-  }
-  .category-add-all {
-    margin-left: auto; background: none; border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px; padding: 2px 8px; font-size: 10px;
-    color: var(--text-muted); cursor: pointer; font-family: 'JetBrains Mono', monospace;
-  }
-  .category-add-all:hover { color: var(--text-secondary); }
-  .ps-row { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 2px; }
+  /* ── Feed items ── */
+  .fi { position: relative; width: 50px; height: 50px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: center; cursor: grab; transition: all .15s; }
+  .fi:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); }
+  .fi:active { cursor: grabbing; transform: scale(.95); }
+  .fi.done { opacity: .12; pointer-events: none; cursor: default; }
+  .fi.dragging-src { opacity: .15; }
+  .fi .fi-x { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; border-radius: 50%; background: rgba(231,76,60,0.85); border: 2px solid var(--bg-primary); color: #fff; font-size: 9px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .1s; z-index: 5; line-height: 1; }
+  .fi:not(.done):hover .fi-x { opacity: 1; }
+  .fi .fi-tip { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); padding: 2px 7px; border-radius: 3px; background: rgba(0,0,0,.95); font-size: 8px; color: rgba(255,255,255,.8); white-space: nowrap; pointer-events: none; z-index: 20; display: none; font-family: 'JetBrains Mono', monospace; }
+  .fi:hover .fi-tip { display: block; }
 
-  .ps-icon-btn {
-    position: relative; cursor: pointer; background: none; border: none;
-    padding: 3px; border-radius: 6px; transition: all 0.15s;
-  }
-  .ps-icon-btn:hover:not(.ranked) { transform: translateY(-2px); background: rgba(255,255,255,0.04); }
-  .ps-icon-btn.ranked { opacity: 0.18; cursor: default; filter: grayscale(0.8); }
-  .ps-icon-wrap { position: relative; width: 50px; height: 50px; }
-  .ps-icon-wrap svg { width: 50px; height: 50px; display: block; }
-  .ps-icon-wrap img { max-width: 90%; position: absolute; top: 50%; left: 50%; pointer-events: none; }
-  .ps-icon-wrap img.base-img { transform: translate(-50%, -50%); }
-  .ps-icon-wrap img.plus-img { transform: translate(-50%, -55%); }
-  .ps-icon-label {
-    position: absolute; top: 87%; left: 50%; transform: translateX(-50%);
-    padding: 1px 4px; font-size: 7.5px; font-weight: 700;
-    color: #fff; background: #3a3a4a; text-align: center; border-radius: 3px;
-    z-index: 10; white-space: nowrap; overflow: hidden;
-    text-overflow: ellipsis; max-width: 56px; pointer-events: none;
-  }
-  .ps-icon-btn.ranked .ps-icon-label { background: rgba(46,204,113,0.6); }
+  /* ── Ranking area ── */
+  .rank-lbl { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.7); font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+  .rank-lbl .btn-clear { background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 8px; font-size: 10px; color: rgba(255,255,255,0.4); cursor: pointer; font-family: 'JetBrains Mono', monospace; }
+  .rank-lbl .btn-clear:hover { color: #e74c3c; border-color: rgba(231,76,60,0.3); }
+  .rank-area { display: flex; flex-wrap: wrap; align-items: flex-start; min-height: 60px; gap: 0; }
 
-  .btn-clear {
-    background: none; border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px; padding: 2px 8px; font-size: 10px;
-    color: var(--text-muted); cursor: pointer; font-family: 'JetBrains Mono', monospace;
-  }
-  .btn-clear:hover { color: var(--cat-scoring); }
+  .slot { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .slot-num { font-size: 9px; font-family: 'JetBrains Mono', monospace; font-weight: 700; height: 16px; line-height: 16px; text-align: center; width: 50px; border-radius: 3px 3px 0 0; }
+  .tile { width: 50px; height: 50px; position: relative; border-radius: 0 0 6px 6px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; cursor: grab; transition: background .15s, box-shadow .15s, opacity .15s, transform .15s; }
+  .tile:hover { background: rgba(255,255,255,0.07); }
+  .tile:active { cursor: grabbing; }
+  .tile.dragging { opacity: .12; transform: scale(.9); }
+  .tile .tile-tip { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); padding: 2px 7px; border-radius: 3px; background: rgba(0,0,0,.95); font-size: 8px; color: rgba(255,255,255,.8); white-space: nowrap; pointer-events: none; z-index: 20; display: none; font-family: 'JetBrains Mono', monospace; }
+  .tile:hover .tile-tip { display: block; }
+  .tile.just-placed { animation: placed .35s ease-out; }
+  @keyframes placed { 0% { background: rgba(232,68,46,.3); transform: scale(1.08); } 100% { background: rgba(255,255,255,.04); transform: scale(1); } }
+  .tile.warn { box-shadow: inset 0 0 0 2px rgba(242,101,34,0.7); animation: warnTile 1.5s ease-in-out infinite; }
+  @keyframes warnTile { 0%,100% { box-shadow: inset 0 0 0 2px rgba(242,101,34,0.7); } 50% { box-shadow: inset 0 0 0 2px rgba(242,101,34,0.25); } }
 
-  .rank-empty {
-    padding: 40px 20px; text-align: center; border-radius: 12px;
-    border: 2px dashed rgba(255,255,255,0.08); color: var(--text-muted); font-size: 14px;
-  }
-  .rank-empty .icon { font-size: 28px; margin-bottom: 10px; opacity: 0.3; }
-  .rank-empty .sub { font-size: 12px; opacity: 0.6; margin-top: 6px; }
+  /* ── Drop zones ── */
+  .dz { width: 0; align-self: stretch; border-radius: 3px; transition: width .12s ease, margin .12s ease, background .12s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0; min-height: 64px; overflow: hidden; margin: 0; }
+  .dz.vis { width: 6px; margin: 0 1px; background: rgba(232,68,46,0.06); animation: dzSoft 3s ease-in-out infinite; }
+  @keyframes dzSoft { 0%,100% { background: rgba(232,68,46,0.04); } 50% { background: rgba(232,68,46,0.12); } }
+  .dz.hot { width: 54px !important; background: rgba(232,68,46,0.1) !important; border: 2px dashed rgba(232,68,46,0.4) !important; border-radius: 6px !important; animation: dzHot .8s ease-in-out infinite !important; margin: 0 2px !important; overflow: visible; }
+  @keyframes dzHot { 0%,100% { box-shadow: 0 0 6px rgba(232,68,46,0.2); } 50% { box-shadow: 0 0 18px rgba(232,68,46,0.5); } }
+  .dz .dz-ghost { display: none; pointer-events: none; opacity: .4; }
+  .dz.hot .dz-ghost { display: flex; flex-direction: column; align-items: center; }
 
-  .rank-list { max-height: 700px; overflow-y: auto; padding-right: 4px; position: relative; }
-  .rank-list::-webkit-scrollbar { width: 4px; }
-  .rank-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+  .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px; border: 2px dashed rgba(255,255,255,0.08); border-radius: 8px; gap: 8px; transition: all .15s; }
+  .empty-state.drag-over { border-color: rgba(232,68,46,0.35); background: rgba(232,68,46,0.04); }
+  .empty-state .es-main { font-size: 13px; color: rgba(255,255,255,0.5); font-family: 'JetBrains Mono', monospace; }
+  .empty-state .es-sub { font-size: 10px; color: rgba(255,255,255,0.35); font-family: 'JetBrains Mono', monospace; font-style: italic; }
+  .btn-add-all-big { padding: 8px 22px; border-radius: 6px; border: 1px solid rgba(232,68,46,0.2); background: rgba(232,68,46,0.08); color: var(--gg-red); font-size: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 600; cursor: pointer; transition: all .15s; }
+  .btn-add-all-big:hover { background: rgba(232,68,46,0.15); border-color: rgba(232,68,46,0.35); }
 
-  .rank-item {
-    display: flex; align-items: center; gap: 7px;
-    padding: 4px 10px; background: rgba(255,255,255,0.04);
-    border-radius: 7px; cursor: grab; user-select: none;
-    position: relative; margin-bottom: 1px;
-    border-top: 2px solid transparent;
-    transition: opacity 0.15s;
-  }
-  .rank-item:active { cursor: grabbing; }
-  .rank-item.dragging { opacity: 0.15; }
-  .rank-item.insert-above { border-top-color: var(--gg-red); }
+  /* ── Bin ── */
+  .bin-section { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .bin-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); font-family: 'JetBrains Mono', monospace; font-weight: 600; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .bin-strip { display: flex; flex-wrap: wrap; gap: 3px; min-height: 28px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.015); border: 1px dashed rgba(255,255,255,0.06); transition: all .15s; }
+  .bin-strip.drag-over { background: rgba(231,76,60,0.06); border-color: rgba(231,76,60,0.25); box-shadow: 0 0 12px rgba(231,76,60,0.1); }
+  .bin-empty { font-size: 10px; color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace; padding: 4px; }
+  .bin-tile { width: 34px; height: 34px; border-radius: 5px; background: rgba(255,255,255,0.025); display: flex; align-items: center; justify-content: center; position: relative; opacity: .3; cursor: grab; transition: all .15s; }
+  .bin-tile:hover { opacity: .55; }
+  .bin-tile.warn { box-shadow: inset 0 0 0 2px rgba(242,101,34,0.55); opacity: .65; }
+  .bin-tile .bt-tip { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); padding: 2px 6px; border-radius: 3px; background: rgba(0,0,0,.95); font-size: 7px; color: rgba(255,255,255,.6); white-space: nowrap; pointer-events: none; z-index: 20; display: none; font-family: 'JetBrains Mono', monospace; }
+  .bin-tile:hover .bt-tip { display: block; }
 
-  .rank-num {
-    width: 24px; height: 24px; border-radius: 5px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 11px; flex-shrink: 0;
-    font-family: 'JetBrains Mono', monospace;
-    background: linear-gradient(135deg, var(--gg-red), var(--gg-orange)); color: #fff;
-  }
-  .rank-grip { color: rgba(255,255,255,0.12); font-size: 11px; flex-shrink: 0; letter-spacing: 1px; }
-  .rank-item-icon { position: relative; width: 30px; height: 30px; flex-shrink: 0; }
-  .rank-item-icon svg { width: 30px; height: 30px; display: block; }
-  .rank-item-icon img { max-width: 90%; position: absolute; top: 50%; left: 50%; pointer-events: none; }
-  .rank-item-icon img.base-img { transform: translate(-50%, -50%); }
-  .rank-item-icon img.plus-img { transform: translate(-50%, -55%); }
-  .rank-item-name {
-    flex: 1; font-size: 13px; min-width: 0;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .rank-item-name.plus { color: var(--gg-gold); font-weight: 600; }
-  .rank-item-name.base { color: rgba(255,255,255,0.85); }
-  .rank-cat-label {
-    font-size: 9px; opacity: 0.45; font-family: 'JetBrains Mono', monospace;
-    text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
-  }
-  .rank-arrows { display: flex; flex-direction: column; flex-shrink: 0; }
-  .rank-arrows button {
-    background: none; border: none; padding: 1px 4px;
-    font-size: 10px; cursor: pointer; color: rgba(255,255,255,0.15); line-height: 1;
-  }
-  .rank-arrows button:hover { color: rgba(255,255,255,0.6); }
-  .rank-arrows button:disabled { color: rgba(255,255,255,0.04); cursor: default; }
-  .rank-btn-remove {
-    background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.15);
-    border-radius: 4px; padding: 4px 10px; font-size: 13px; cursor: pointer;
-    color: rgba(231,76,60,0.5); line-height: 1; transition: all 0.15s;
-    flex-shrink: 0; margin-left: 2px; font-weight: 700;
-  }
-  .rank-btn-remove:hover { background: rgba(231,76,60,0.2); border-color: rgba(231,76,60,0.4); color: #e74c3c; }
-
-  .rank-item.warn-order { background: rgba(242,101,34,0.12); border-left: 3px solid #f26522; }
-  .rank-item.warn-unpaired { background: rgba(231,76,60,0.12); border-left: 3px solid #e74c3c; }
-  .rank-item.warn-order.warn-unpaired { background: rgba(231,76,60,0.15); border-left: 3px solid #e74c3c; }
-
-  .ps-icon-btn.needs-pair {
-    outline: 2px solid rgba(231,76,60,0.6); outline-offset: -1px; border-radius: 6px;
-    animation: needsPairPulse 1.5s ease-in-out infinite;
-  }
-  @keyframes needsPairPulse {
-    0%, 100% { outline-color: rgba(231,76,60,0.6); }
-    50% { outline-color: rgba(231,76,60,0.2); }
-  }
-
-  .submit-explainer {
-    margin-top: 8px; padding: 10px 14px; border-radius: 6px;
-    font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.6);
-    background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.15);
-  }
-  .submit-explainer strong { color: #e74c3c; }
-  .submit-explainer .fix-list { margin-top: 4px; padding-left: 16px; }
-  .submit-explainer .fix-list li { margin: 2px 0; color: rgba(255,255,255,0.5); }
-
-  @keyframes warnPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-  .rank-drop-end {
-    height: 20px; border-radius: 6px;
-    border: 2px dashed transparent; margin-top: 2px;
-    transition: border-color 0.15s;
-  }
-  .rank-drop-end.insert-here { border-color: var(--gg-red); }
-
+  /* ── Submit ── */
   .submit-area { margin-top: 18px; }
-  .btn-submit {
-    width: 100%; padding: 12px 20px; border-radius: 8px; border: none;
-    font-size: 14px; font-weight: 700; font-family: 'DM Sans', sans-serif;
-    text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
-  }
+  .btn-submit { width: 100%; padding: 12px 20px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; font-family: 'DM Sans', sans-serif; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
   .btn-submit:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: default; }
   .btn-submit:not(:disabled) { color: #fff; }
   .btn-submit:not(:disabled):hover { filter: brightness(1.1); transform: translateY(-1px); }
   .btn-submit.sending { opacity: 0.7; pointer-events: none; }
-  .submitted-banner {
-    padding: 12px 20px; border-radius: 8px; background: rgba(46,204,113,0.1);
-    border: 1px solid rgba(46,204,113,0.3); color: #2ecc71; font-size: 14px;
-    font-weight: 600; text-align: center;
-  }
-  .submit-feedback {
-    margin-top: 8px; padding: 8px 12px; border-radius: 6px;
-    font-size: 12px; text-align: center; display: none;
-  }
+  .submitted-banner { padding: 12px 20px; border-radius: 8px; background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); color: #2ecc71; font-size: 14px; font-weight: 600; text-align: center; }
+  .submit-feedback { margin-top: 8px; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center; display: none; }
   .submit-feedback.success { display: block; background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.2); color: #2ecc71; }
   .submit-feedback.error { display: block; background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.2); color: #e74c3c; }
+  .submit-explainer { margin-top: 8px; padding: 10px 14px; border-radius: 6px; font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.6); background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.15); }
+  .submit-explainer strong { color: #e74c3c; }
+  .submit-explainer .fix-list { margin-top: 4px; padding-left: 16px; }
+  .submit-explainer .fix-list li { margin: 2px 0; color: rgba(255,255,255,0.5); }
 
-  .completion-banner {
-    margin-top: 24px; padding: 16px 20px; border-radius: 10px;
-    background: linear-gradient(135deg, rgba(232,68,46,0.1), rgba(242,101,34,0.05));
-    border: 1px solid rgba(232,68,46,0.2); text-align: center; display: none;
-  }
+  /* ── Archetype progress ── */
+  .arch-prog { margin-bottom: 8px; }
+  .arch-prog-info { display: flex; justify-content: space-between; margin-bottom: 3px; }
+  .arch-prog-info span { font-size: 10px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
+  .arch-prog-info .ap-left { color: rgba(255,255,255,0.55); }
+  .arch-prog-info .ap-pct { color: var(--gg-red); font-weight: 700; }
+  .arch-prog-track { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.06); overflow: hidden; }
+  .arch-prog-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--gg-red), var(--gg-orange)); transition: width .4s; }
+
+  .completion-banner { margin-top: 24px; padding: 16px 20px; border-radius: 10px; background: linear-gradient(135deg, rgba(232,68,46,0.1), rgba(242,101,34,0.05)); border: 1px solid rgba(232,68,46,0.2); text-align: center; display: none; }
   .completion-banner.show { display: block; }
   .completion-banner h3 { font-size: 16px; font-weight: 600; color: var(--gg-red); margin-bottom: 4px; }
   .completion-banner p { font-size: 13px; color: var(--text-muted); }
-  .btn-download {
-    display: inline-block; margin-top: 12px; padding: 8px 24px; border-radius: 6px;
-    background: linear-gradient(135deg, var(--gg-red), var(--gg-orange));
-    border: none; color: #fff; font-weight: 700; font-size: 13px;
-    cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
-  }
+  .btn-download { display: inline-block; margin-top: 12px; padding: 8px 24px; border-radius: 6px; background: linear-gradient(135deg, var(--gg-red), var(--gg-orange)); border: none; color: #fff; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
   .btn-download:hover { filter: brightness(1.1); transform: translateY(-1px); }
-  .footer {
-    padding: 20px 32px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.04);
-    text-align: center; color: rgba(255,255,255,0.12); font-size: 11px;
-    font-family: 'JetBrains Mono', monospace;
-  }
+  .footer { padding: 20px 32px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.04); text-align: center; color: rgba(255,255,255,0.12); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
   @media (max-width: 768px) {
     .header, .container, .progress-area, .save-status { padding-left: 16px; padding-right: 16px; }
-    .ps-icon-wrap { width: 44px; height: 44px; }
-    .ps-icon-wrap svg { width: 44px; height: 44px; }
-    .ps-icon-label { font-size: 7px; max-width: 48px; }
     .top-bar { flex-direction: column; }
+    .fi { width: 44px; height: 44px; }
   }
 </style>
 </head>
 <body>
-
-<div class="header">
-  <div class="header-inner">
-    <div class="header-left">
-      <div class="header-brand">
-        <img src="https://www.fut.gg/public-assets/logo.png" alt="FUT.GG" style="height:28px;">
-        <span class="header-badge">GG Rating</span>
-      </div>
-      <h1>PlayStyle Importance Ranking</h1>
-      <p>Thank you so much for taking part in the FUT.GG PlayStyle survey! Rank playstyles by importance for each player archetype. Click to add, drag to reorder. 🙏</p>
-    </div>
-    <a href="https://discord.com/users/268544974654668800" target="_blank" class="contact-btn">
-      <svg width="20" height="15" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.3 37.3 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.7 9 .2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4c-1.8 1-3.6 1.8-5.5 2.6a.2.2 0 00-.1.3 47.6 47.6 0 003.6 5.9.2.2 0 00.3.1 58.6 58.6 0 0017.7-9v-.1c1.4-15-2.3-28.4-9.8-40.1a.2.2 0 00-.1-.1zM23.7 37.3c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.8 7.1-6.3 7.1zm23.2 0c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.7 7.1-6.3 7.1z"/></svg>
-      Questions? Contact Ben
-    </a>
-  </div>
-</div>
-
-<div style="max-width:1300px;margin:16px auto 0;padding:0 32px;">
-  <div style="padding:14px 18px;border-radius:10px;background:rgba(242,101,34,0.08);border:1px solid rgba(242,101,34,0.25);font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;">
-    <strong style="color:#f26522;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">⚠ IMPORTANT — PLEASE READ</strong><br>
-    You are ranking how important each PlayStyle or PlayStyle+ is, <em style="color:#fff;font-style:italic;">not selecting the perfect selection of PlayStyles for that position</em>.<br>
-    Think of it as a direct comparison for a player you're using in a one-off match:<br>
-    <span style="opacity:0.85"><strong>• You'd rather have an Inside Forward with Trickster+ than Trickster even if the difference is marginal, because you don't need to factor in that a player has limited PlayStyle+ slots</strong></span><br>
-    <span style="opacity:0.85">• As far as we're aware there isn't a PlayStyle+ which is actually worse than the PlayStyle</span><br>
-    <span style="opacity:0.85">• Of course between different PlayStyles that wouldn't be the case (Base Intercept will likely be ranked higher than Slide Tackle+ for example)</span><br>
-    <span style="opacity:0.85">• Please only leave out completely irrelevant PlayStyles</span>
-  </div>
-</div>
-
-<div class="progress-area">
-  <div class="progress-label">
-    <span id="progressLabel"></span>
-    <span id="progressPct" style="color:var(--gg-red);font-weight:600"></span>
-  </div>
-  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-</div>
+<div class="header"><div class="header-inner"><div class="header-left"><div class="header-brand"><img src="https://www.fut.gg/public-assets/logo.png" alt="FUT.GG" style="height:28px"><span class="header-badge">GG Rating</span></div><h1>PlayStyle Importance Ranking</h1><p>Thank you so much for taking part in the FUT.GG PlayStyle survey! Rank playstyles by importance for each player archetype. Drag to rank, ✕ to bin. 🙏</p></div><a href="https://discord.com/users/268544974654668800" target="_blank" class="contact-btn"><svg width="20" height="15" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.3 37.3 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.7 9 .2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4c-1.8 1-3.6 1.8-5.5 2.6a.2.2 0 00-.1.3 47.6 47.6 0 003.6 5.9.2.2 0 00.3.1 58.6 58.6 0 0017.7-9v-.1c1.4-15-2.3-28.4-9.8-40.1a.2.2 0 00-.1-.1zM23.7 37.3c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.8 7.1-6.3 7.1zm23.2 0c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.7 7.1-6.3 7.1z"/></svg>Questions? Contact Ben</a></div></div>
+<div style="max-width:1300px;margin:16px auto 0;padding:0 32px;"><div style="padding:14px 18px;border-radius:10px;background:rgba(242,101,34,0.08);border:1px solid rgba(242,101,34,0.25);font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;"><strong style="color:#f26522;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">⚠ IMPORTANT — PLEASE READ</strong><br>You are ranking how important each PlayStyle or PlayStyle+ is, <em style="color:#fff;font-style:italic;">not selecting the perfect selection of PlayStyles for that position</em>.<br>Think of it as a direct comparison for a player you're using in a one-off match:<br><span style="opacity:0.85"><strong>• You'd rather have an Inside Forward with Trickster+ than Trickster even if the difference is marginal, because you don't need to factor in that a player has limited PlayStyle+ slots</strong></span><br><span style="opacity:0.85">• As far as we're aware there isn't a PlayStyle+ which is actually worse than the PlayStyle</span><br><span style="opacity:0.85">• Of course between different PlayStyles that wouldn't be the case (Base Intercept will likely be ranked higher than Slide Tackle+ for example)</span><br><span style="opacity:0.85">• Please only leave out completely irrelevant PlayStyles</span></div></div>
+<div class="progress-area"><div class="progress-label"><span id="progressLabel"></span><span id="progressPct" style="color:var(--gg-red);font-weight:700"></span></div><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div></div>
 <div class="save-status" id="saveStatus"></div>
-
-<div class="container">
-  <div class="name-bar">
-    <label>Your Name</label>
-    <input type="text" id="respondentName" placeholder="e.g. ProPlayer123">
-  </div>
-
-  <div class="tabs" id="tabs"></div>
-  <div id="panels"></div>
-  <div class="completion-banner" id="completionBanner">
-    <h3>All archetypes submitted ✓</h3>
-    <p id="completionText"></p>
-    <button class="btn-download" onclick="downloadAll()">Download Backup (CSV)</button>
-  </div>
-</div>
-
-<div class="footer">FUT.GG PlayStyle Ranking Tool v7 — GG Rating Research</div>
+<div class="container"><div class="name-bar"><label>Your Name</label><input type="text" id="respondentName" placeholder="e.g. ProPlayer123"></div><div class="tabs" id="tabs"></div><div id="panels"></div><div class="completion-banner" id="completionBanner"><h3>All archetypes submitted ✓</h3><p id="completionText"></p><button class="btn-download" onclick="downloadAll()">Download Backup (CSV)</button></div></div>
+<div class="footer">FUT.GG PlayStyle Ranking Tool v8 — GG Rating Research</div>
 
 <script>
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1477373917030252576/J4KqVpeQFvfBdy3WQ82lGZIWI7TUivtSGulx_vM0Qqc23om7WDTcQwTszNaubqJrEp0r";
-const MIN_PS = 30;
-const STORAGE_KEY = "futgg_ps_ranking_v7";
-
-const IMG = "https://game-assets.fut.gg/cdn-cgi/image/quality=85,format=auto,width=180/2026/play-styles";
-
-const CAT_SCORING = { name: "SCORING", color: "#e74c3c", playstyles: [
-  { name: "Finesse Shot", img: "0.2" }, { name: "Chip Shot", img: "1.2" },
-  { name: "Power Shot", img: "2.2" }, { name: "Dead Ball", img: "3.2" },
-  { name: "Acrobatic", img: "25.2" }, { name: "Low Driven", img: "34.3" },
-  { name: "Game Changer", img: "37.3" }, { name: "Precision Header", img: "39.3" },
-]};
-const CAT_PASSING = { name: "PASSING", color: "#3498db", playstyles: [
-  { name: "Incisive Pass", img: "5.3" }, { name: "Pinged Pass", img: "6.2" },
-  { name: "Long Ball Pass", img: "7.2" }, { name: "Tiki Taka", img: "8.2" },
-  { name: "Whipped Pass", img: "9.2" }, { name: "Inventive", img: "38.3" },
-]};
-const CAT_DEFENDING = { name: "DEFENDING", color: "#2ecc71", playstyles: [
-  { name: "Jockey", img: "10.2" }, { name: "Block", img: "11.2" },
-  { name: "Intercept", img: "12.2" }, { name: "Anticipate", img: "13.2" },
-  { name: "Slide Tackle", img: "14.2" }, { name: "Aerial Fortress", img: "35.3" },
-]};
-const CAT_BALLCONTROL = { name: "BALL CONTROL", color: "#9b59b6", playstyles: [
-  { name: "Technical", img: "16.2" }, { name: "Rapid", img: "17.2" },
-  { name: "First Touch", img: "19.2" }, { name: "Trickster", img: "20.2" },
-  { name: "Press Proven", img: "21.2" },
-]};
-const CAT_PHYSICAL = { name: "PHYSICAL", color: "#e67e22", playstyles: [
-  { name: "Bruiser", img: "15.2" }, { name: "Quick Step", img: "22.2" },
-  { name: "Relentless", img: "23.2" }, { name: "Long Throw", img: "26.2" },
-  { name: "Enforcer", img: "36.3" },
-]};
-const CAT_GK = { name: "GOALKEEPING", color: "#00bcd4", playstyles: [
-  { name: "Far Throw", img: "28.3" }, { name: "Footwork", img: "29.3" },
-  { name: "Cross Claimer", img: "30.3" }, { name: "Rush Out", img: "31.3" },
-  { name: "Far Reach", img: "32.3" }, { name: "Deflector", img: "33.3" },
-]};
-
-const OUTFIELD_CATS = [CAT_SCORING, CAT_PASSING, CAT_DEFENDING, CAT_BALLCONTROL, CAT_PHYSICAL];
-const GK_CATS = [CAT_GK, CAT_DEFENDING, CAT_PASSING, CAT_BALLCONTROL, CAT_PHYSICAL];
-const ALL_CATS = [CAT_SCORING, CAT_PASSING, CAT_DEFENDING, CAT_BALLCONTROL, CAT_PHYSICAL, CAT_GK];
-
-const POSITIONS = [
-  { id: "goalkeeper", label: "GK", name: "Goalkeeper", accent: "#00bcd4", isGK: true,
-    roles: ["GK - Goalkeeper", "GK - Ball Playing", "GK - Sweeper Keeper"] },
-  { id: "centreback", label: "CB", name: "Centreback", accent: "#2ecc71",
-    roles: ["CB - Defender", "CB - Stopper", "CB - Ball Playing Defender", "CDM - Centre Half"] },
-  { id: "def_fullback", label: "DEF FB", name: "Defensive Fullback", accent: "#2ecc71",
-    roles: ["LB/RB - Fullback"] },
-  { id: "att_fullback", label: "ATT FB", name: "Attacking Fullback", accent: "#3498db",
-    roles: ["LB/RB - Wingback", "LB/RB - Attacking Wingback"] },
-  { id: "def_mid", label: "DM", name: "Defensive Midfielder", accent: "#2ecc71",
-    roles: ["CDM - Holding", "CDM - Deep Lying Playmaker", "CDM - Wide Half", "CM - Holding", "CM - Deep Lying Playmaker"] },
-  { id: "box_to_box", label: "B2B", name: "Box to Box", accent: "#3498db",
-    roles: ["CM - Box to Box", "CDM - Box Crasher"] },
-  { id: "inside_forward", label: "IF", name: "Inside Forward", accent: "#e74c3c",
-    roles: ["LM/RM/LW/RW - Inside Forward"] },
-  { id: "winger", label: "W", name: "Winger", accent: "#e67e22",
-    roles: ["LM/RM/LW/RW - Winger"] },
-  { id: "cam_playmaker", label: "CAM(P)", name: "CAM Playmaker", accent: "#9b59b6",
-    roles: ["CAM - Playmaker", "CAM - Classic 10", "CM - Playmaker"] },
-  { id: "cam_shadow", label: "CAM(S)", name: "CAM Shadow Striker", accent: "#e74c3c",
-    roles: ["CAM - Shadow Striker", "ST - False 9"] },
-  { id: "agile_st", label: "ST(A)", name: "Agile Striker", accent: "#e74c3c",
-    roles: ["ST - Advanced Forward", "ST - Poacher"] },
-  { id: "physical_st", label: "ST(P)", name: "Physical Striker", accent: "#e67e22",
-    roles: ["ST - Advanced Forward", "ST - Poacher", "ST - Target Forward"] },
+const DISCORD_WEBHOOK="https://discord.com/api/webhooks/1477373917030252576/J4KqVpeQFvfBdy3WQ82lGZIWI7TUivtSGulx_vM0Qqc23om7WDTcQwTszNaubqJrEp0r";
+const MIN_PS=30, STORAGE_KEY="futgg_ps_ranking_v8";
+const IMG="https://game-assets.fut.gg/cdn-cgi/image/quality=85,format=auto,width=180/2026/play-styles";
+const PSD={"Finesse Shot":{img:"0.2"},"Chip Shot":{img:"1.2"},"Power Shot":{img:"2.2"},"Dead Ball":{img:"3.2"},"Acrobatic":{img:"25.2"},"Low Driven":{img:"34.3"},"Game Changer":{img:"37.3"},"Precision Header":{img:"39.3"},"Incisive Pass":{img:"5.3"},"Pinged Pass":{img:"6.2"},"Long Ball Pass":{img:"7.2"},"Tiki Taka":{img:"8.2"},"Whipped Pass":{img:"9.2"},"Inventive":{img:"38.3"},"Jockey":{img:"10.2"},"Block":{img:"11.2"},"Intercept":{img:"12.2"},"Anticipate":{img:"13.2"},"Slide Tackle":{img:"14.2"},"Aerial Fortress":{img:"35.3"},"Technical":{img:"16.2"},"Rapid":{img:"17.2"},"First Touch":{img:"19.2"},"Trickster":{img:"20.2"},"Press Proven":{img:"21.2"},"Bruiser":{img:"15.2"},"Quick Step":{img:"22.2"},"Relentless":{img:"23.2"},"Long Throw":{img:"26.2"},"Enforcer":{img:"36.3"},"Far Throw":{img:"28.3"},"Footwork":{img:"29.3"},"Cross Claimer":{img:"30.3"},"Rush Out":{img:"31.3"},"Far Reach":{img:"32.3"},"Deflector":{img:"33.3"}};
+const ALL_CATS=[
+  {name:"SCORING",color:"#e74c3c",ps:["Finesse Shot","Chip Shot","Power Shot","Dead Ball","Acrobatic","Low Driven","Game Changer","Precision Header"]},
+  {name:"PASSING",color:"#3498db",ps:["Incisive Pass","Pinged Pass","Long Ball Pass","Tiki Taka","Whipped Pass","Inventive"]},
+  {name:"DEFENDING",color:"#2ecc71",ps:["Jockey","Block","Intercept","Anticipate","Slide Tackle","Aerial Fortress"]},
+  {name:"BALL CONTROL",color:"#9b59b6",ps:["Technical","Rapid","First Touch","Trickster","Press Proven"]},
+  {name:"PHYSICAL",color:"#e67e22",ps:["Bruiser","Quick Step","Relentless","Long Throw","Enforcer"]},
+  {name:"GOALKEEPING",color:"#00bcd4",ps:["Far Throw","Footwork","Cross Claimer","Rush Out","Far Reach","Deflector"]},
+];
+// Reversed category order: Physical first, Scoring last. GK gets GK at end.
+const OUTFIELD_CATS_NAMES=["PHYSICAL","BALL CONTROL","DEFENDING","PASSING","SCORING"];
+const GK_CATS_NAMES=["PHYSICAL","BALL CONTROL","DEFENDING","PASSING","GOALKEEPING"];
+function catsFor(pos){const n=pos.isGK?GK_CATS_NAMES:OUTFIELD_CATS_NAMES;return n.map(x=>ALL_CATS.find(c=>c.name===x))}
+const PHASES=[{label:"Base",plus:false},{label:"PlayStyle+",plus:true}];
+// Reversed position order: Physical Striker first, GK last
+const POSITIONS=[
+  {id:"physical_st",label:"ST(P)",name:"Physical Striker",accent:"#e67e22",roles:["ST - Advanced Forward","ST - Poacher","ST - Target Forward"]},
+  {id:"agile_st",label:"ST(A)",name:"Agile Striker",accent:"#e74c3c",roles:["ST - Advanced Forward","ST - Poacher"]},
+  {id:"cam_shadow",label:"CAM(S)",name:"CAM Shadow Striker",accent:"#e74c3c",roles:["CAM - Shadow Striker","ST - False 9"]},
+  {id:"cam_playmaker",label:"CAM(P)",name:"CAM Playmaker",accent:"#9b59b6",roles:["CAM - Playmaker","CAM - Classic 10","CM - Playmaker"]},
+  {id:"winger",label:"W",name:"Winger",accent:"#e67e22",roles:["LM/RM/LW/RW - Winger"]},
+  {id:"inside_forward",label:"IF",name:"Inside Forward",accent:"#e74c3c",roles:["LM/RM/LW/RW - Inside Forward"]},
+  {id:"box_to_box",label:"B2B",name:"Box to Box",accent:"#3498db",roles:["CM - Box to Box","CDM - Box Crasher"]},
+  {id:"def_mid",label:"DM",name:"Defensive Midfielder",accent:"#2ecc71",roles:["CDM - Holding","CDM - Deep Lying Playmaker","CDM - Wide Half","CM - Holding","CM - Deep Lying Playmaker"]},
+  {id:"att_fullback",label:"ATT FB",name:"Attacking Fullback",accent:"#3498db",roles:["LB/RB - Wingback","LB/RB - Attacking Wingback"]},
+  {id:"def_fullback",label:"DEF FB",name:"Defensive Fullback",accent:"#2ecc71",roles:["LB/RB - Fullback"]},
+  {id:"centreback",label:"CB",name:"Centreback",accent:"#2ecc71",roles:["CB - Defender","CB - Stopper","CB - Ball Playing Defender","CDM - Centre Half"]},
+  {id:"goalkeeper",label:"GK",name:"Goalkeeper",accent:"#00bcd4",isGK:true,roles:["GK - Goalkeeper","GK - Ball Playing","GK - Sweeper Keeper"]},
 ];
 
-let state = { activeTab: 0, rankings: {}, submitted: {}, nameLocked: false };
-POSITIONS.forEach(p => { state.rankings[p.id] = []; state.submitted[p.id] = false; });
-let dragFrom = null, dragTarget = null;
+let state={activeTab:0,submitted:{},nameLocked:false},archState={};
+POSITIONS.forEach(p=>{state.submitted[p.id]=false;archState[p.id]={ranked:[],binned:[],placedSet:new Set(),binnedSet:new Set(),catIdx:0,phaseIdx:0}});
+let gc=0,dragPayload=null,isDragging=false;
 
-function saveState() {
-  try {
-    const data = {
-      name: document.getElementById('respondentName')?.value || '',
-      activeTab: state.activeTab, submitted: state.submitted,
-      nameLocked: state.nameLocked, rankings: {}
-    };
-    POSITIONS.forEach(p => {
-      data.rankings[p.id] = state.rankings[p.id].map(item => ({
-        id: item.id, isPlus: item.isPlus, psName: item.psData.name, category: item.category, color: item.color
-      }));
-    });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    showSave('Progress saved');
-  } catch(e) { console.warn('Save failed', e); }
-}
+function svgS(plus,sz){if(plus){const g=`g${gc++}`;return`<svg width="${sz}" height="${sz}" viewBox="0 0 256 256"><defs><linearGradient id="${g}" x1="0" y1="0" x2=".7" y2="1"><stop offset="0%" stop-color="#efc53f"/><stop offset="100%" stop-color="#f2e2b5"/></linearGradient></defs><path d="M12.813,104.953L68.157,21.862H188.143l55.045,83.091L128,235.138Z" fill="url(#${g})"/></svg>`}return`<svg width="${sz}" height="${sz}" viewBox="0 0 256 256"><path d="M128,12.808L243.192,128,128,243.192,12.808,128Z" fill="#FFF"/></svg>`}
+function ic(item,sz){const t=item.plus?'translate(-50%,-55%)':'translate(-50%,-50%)';return`<div style="position:relative;width:${sz}px;height:${sz}px;flex-shrink:0">${svgS(item.plus,sz)}<img src="${IMG}/${item.img}.png" style="max-width:85%;position:absolute;top:50%;left:50%;transform:${t};pointer-events:none"></div>`}
+function parse(id){const p=id.endsWith('+');const n=p?id.slice(0,-1):id;return{id,name:n,plus:p,img:PSD[n].img}}
+function pid(n,plus){return n+(plus?'+':'')}
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    const data = JSON.parse(raw);
-    if (data.name) document.getElementById('respondentName').value = data.name;
-    state.activeTab = data.activeTab || 0;
-    state.submitted = data.submitted || {};
-    state.nameLocked = data.nameLocked || false;
-    if (state.nameLocked) {
-      const ni = document.getElementById('respondentName');
-      ni.disabled = true; ni.style.opacity = '0.5';
-    }
-    POSITIONS.forEach(p => {
-      const saved = data.rankings?.[p.id] || [];
-      state.rankings[p.id] = saved.map(item => {
-        const info = findPS(item.psName);
-        if (!info) return null;
-        return { id: item.id, isPlus: item.isPlus, psData: info.psData, category: info.category, color: info.color };
-      }).filter(Boolean);
-      if (!(p.id in state.submitted)) state.submitted[p.id] = false;
-    });
-    return true;
-  } catch(e) { console.warn('Load failed', e); return false; }
-}
-
-function showSave(msg) {
-  const el = document.getElementById('saveStatus');
-  el.textContent = msg;
-  clearTimeout(el._t);
-  el._t = setTimeout(() => { el.textContent = ''; }, 2000);
-}
-
-let gc = 0;
-function shapeSVG(plus, sz) {
-  if (plus) {
-    const g = `gG${gc++}`;
-    return `<svg width="${sz}" height="${sz}" viewBox="0 0 256 256"><defs><linearGradient id="${g}" x1="0" y1="0" x2="0.7" y2="1"><stop offset="0%" stop-color="#efc53f"/><stop offset="100%" stop-color="#f2e2b5"/></linearGradient></defs><path d="M12.813,104.953L68.157,21.862H188.143l55.045,83.091L128,235.138Z" fill="url(#${g})"/></svg>`;
+// Warnings: baseAbovePlus ALWAYS. Unpaired/bin-split only in PS+ phase or forSubmit.
+function getWarnings(posId,forSubmit){
+  const a=archState[posId],bSet=new Set(a.binned.map(b=>b.id)),rPos={};
+  a.ranked.forEach((r,i)=>rPos[r.id]=i);
+  const showPairs=forSubmit||a.phaseIdx===1;
+  const w={rank:new Set(),bin:new Set(),baseAbovePlus:0,unpaired:[]};
+  a.ranked.forEach((item,idx)=>{
+    if(!item.plus){const p2=item.name+'+';if(p2 in rPos&&rPos[p2]>idx){w.rank.add(item.id);w.rank.add(p2);w.baseAbovePlus++}}
+  });
+  if(showPairs){
+    a.ranked.forEach(item=>{const partner=item.plus?item.name:item.name+'+';if(bSet.has(partner)){w.rank.add(item.id);w.bin.add(partner)}});
+    a.binned.forEach(item=>{const partner=item.plus?item.name:item.name+'+';if(rPos[partner]!==undefined){w.bin.add(item.id);w.rank.add(partner)}});
+    const checked=new Set(),rids=new Set(a.ranked.map(r=>r.id));
+    a.ranked.forEach(item=>{if(!checked.has(item.name)){checked.add(item.name);const hB=rids.has(pid(item.name,false)),hP=rids.has(pid(item.name,true)),bB=bSet.has(pid(item.name,false)),bP=bSet.has(pid(item.name,true));if(hB&&!hP&&!bP)w.unpaired.push(item.name+'+');if(hP&&!hB&&!bB)w.unpaired.push(item.name)}});
   }
-  return `<svg width="${sz}" height="${sz}" viewBox="0 0 256 256"><path d="M128,12.808L243.192,128,128,243.192,12.808,128Z" fill="#FFF"/></svg>`;
+  return w;
 }
 
-function psIcon(ps, plus, sz=50) {
-  const c = plus?"plus-img":"base-img", l = ps.name+(plus?"+":"");
-  const w = sz>40?"ps-icon-wrap":"rank-item-icon";
-  return `<div class="${w}" style="width:${sz}px;height:${sz}px">${shapeSVG(plus,sz)}<img src="${IMG}/${ps.img}.png" class="${c}" alt="${l}">${sz>40?`<div class="ps-icon-label">${l}</div>`:''}</div>`;
-}
+function feedItems(posId){const a=archState[posId],cats=catsFor(POSITIONS.find(p=>p.id===posId)),cat=cats[a.catIdx];if(!cat)return[];return cat.ps.map(name=>{const id=name+(PHASES[a.phaseIdx].plus?'+':'');return{...parse(id),done:a.placedSet.has(id)||a.binnedSet.has(id)}})}
+function totalPS(posId){return catsFor(POSITIONS.find(p=>p.id===posId)).reduce((s,c)=>s+c.ps.length*2,0)}
+function allCatsDone(posId){const a=archState[posId],cats=catsFor(POSITIONS.find(p=>p.id===posId));for(const c of cats)for(const ph of PHASES)for(const n of c.ps){const id=n+(ph.plus?'+':'');if(!a.placedSet.has(id)&&!a.binnedSet.has(id))return false}return true}
+function curCatDone(posId){return feedItems(posId).every(f=>f.done)}
 
-function pid(n, p) { return n+(p?'+':''); }
-function catsFor(pos) { return pos.isGK ? GK_CATS : OUTFIELD_CATS; }
-function findPS(name) {
-  for (const c of ALL_CATS) { const f=c.playstyles.find(p=>p.name===name); if(f) return {psData:f,category:c.name,color:c.color}; }
-  return null;
-}
+function saveState(){try{const data={name:document.getElementById('respondentName')?.value||'',activeTab:state.activeTab,submitted:state.submitted,nameLocked:state.nameLocked,arch:{}};POSITIONS.forEach(p=>{const a=archState[p.id];data.arch[p.id]={ranked:a.ranked.map(r=>r.id),binned:a.binned.map(b=>b.id),catIdx:a.catIdx,phaseIdx:a.phaseIdx}});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));showSave('Progress saved')}catch(e){console.warn('Save failed',e)}}
+function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;const data=JSON.parse(raw);if(data.name)document.getElementById('respondentName').value=data.name;state.activeTab=data.activeTab||0;state.submitted=data.submitted||{};state.nameLocked=data.nameLocked||false;if(state.nameLocked){const ni=document.getElementById('respondentName');ni.disabled=true;ni.style.opacity='0.5'}POSITIONS.forEach(p=>{if(!(p.id in state.submitted))state.submitted[p.id]=false;const saved=data.arch?.[p.id];if(saved){const a=archState[p.id];a.catIdx=saved.catIdx||0;a.phaseIdx=saved.phaseIdx||0;a.ranked=(saved.ranked||[]).map(id=>PSD[id.endsWith('+')?id.slice(0,-1):id]?parse(id):null).filter(Boolean);a.binned=(saved.binned||[]).map(id=>PSD[id.endsWith('+')?id.slice(0,-1):id]?parse(id):null).filter(Boolean);a.placedSet=new Set(a.ranked.map(r=>r.id));a.binnedSet=new Set(a.binned.map(b=>b.id))}});return true}catch(e){console.warn('Load failed',e);return false}}
+function showSave(msg){const el=document.getElementById('saveStatus');el.textContent=msg;clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent=''},2000)}
 
-function getWarnings(ranking) {
-  const posMap = {};
-  ranking.forEach((item,idx) => { posMap[item.id] = idx; });
-  const rids = new Set(ranking.map(r=>r.id));
-  let baseAbovePlus = 0;
-  let unpaired = [];
-  const checked = new Set();
-  ranking.forEach((item,idx) => {
-    // base > plus check
-    if (!item.isPlus) {
-      const plusId = item.psData.name + '+';
-      if (plusId in posMap && posMap[plusId] > idx) baseAbovePlus++;
-    }
-    // unpaired check
-    const baseName = item.psData.name;
-    if (!checked.has(baseName)) {
-      checked.add(baseName);
-      const hasBase = rids.has(pid(baseName, false));
-      const hasPlus = rids.has(pid(baseName, true));
-      if (hasBase !== hasPlus) unpaired.push(hasBase ? baseName : baseName + '+');
-    }
-  });
-  return { baseAbovePlus, unpaired };
-}
+function buildCumulativeCSV(){const name=document.getElementById('respondentName').value.trim();let rows=['Respondent,Archetype,Rank,PlayStyle,Category,IsPlus'];POSITIONS.forEach(pos=>{if(state.submitted[pos.id]){archState[pos.id].ranked.forEach((item,idx)=>{const cat=ALL_CATS.find(c=>c.ps.includes(item.name));rows.push(`${name},${pos.name},${idx+1},${item.id.replace(/,/g,'')},${cat?cat.name:''},${item.plus?'TRUE':'FALSE'}`)})}});return rows.join('\n')}
 
-function buildCumulativeCSV() {
-  const name = document.getElementById('respondentName').value.trim();
-  let rows = ['Respondent,Archetype,Rank,PlayStyle,Category,IsPlus'];
-  POSITIONS.forEach(pos => {
-    if (state.submitted[pos.id]) {
-      state.rankings[pos.id].forEach((item, idx) => {
-        const psName = item.id.replace(/,/g, '');
-        rows.push(`${name},${pos.name},${idx+1},${psName},${item.category},${item.isPlus?'TRUE':'FALSE'}`);
-      });
-    }
-  });
-  return rows.join('\n');
-}
+function renderProgress(){const t=POSITIONS.length,d=POSITIONS.filter(p=>state.submitted[p.id]).length,pct=Math.round((d/t)*100);document.getElementById('progressLabel').textContent=`${d} / ${t} archetypes submitted`;document.getElementById('progressPct').textContent=`${pct}%`;document.getElementById('progressFill').style.width=`${pct}%`}
+function renderTabs(){document.getElementById('tabs').innerHTML=POSITIONS.map((p,i)=>{const active=i===state.activeTab,bg=active?p.accent:'rgba(255,255,255,0.06)',tc=active?'#fff':'rgba(255,255,255,0.3)';let dot='transparent';if(state.submitted[p.id])dot='#2ecc71';else if(archState[p.id].ranked.length>0||archState[p.id].binned.length>0)dot='#d4af37';return`<div class="tab ${active?'active':''}" onclick="switchTab(${i})"><span class="tab-badge" style="background:${bg};color:${tc}">${p.label}</span><span class="tab-label">${p.name}</span><span class="tab-status-dot" style="background:${dot}"></span></div>`}).join('')}
 
-function renderProgress() {
-  const t=POSITIONS.length, d=POSITIONS.filter(p=>state.submitted[p.id]).length;
-  const pct=Math.round((d/t)*100);
-  document.getElementById('progressLabel').textContent = `${d} / ${t} archetypes submitted`;
-  document.getElementById('progressPct').textContent = `${pct}%`;
-  document.getElementById('progressFill').style.width = `${pct}%`;
-}
-
-function renderTabs() {
-  document.getElementById('tabs').innerHTML = POSITIONS.map((p,i) => {
-    const a=i===state.activeTab;
-    const bg=a?p.accent:'rgba(255,255,255,0.06)';
-    const tc=a?'#fff':'rgba(255,255,255,0.3)';
-    let dot='transparent';
-    if(state.submitted[p.id]) dot='#2ecc71';
-    else if(state.rankings[p.id].length>0) dot='#d4af37';
-    return `<div class="tab ${a?'active':''}" onclick="switchTab(${i})"><span class="tab-badge" style="background:${bg};color:${tc}">${p.label}</span><span class="tab-label">${p.name}</span><span class="tab-status-dot" style="background:${dot}"></span></div>`;
+function renderPanels(){
+  gc=0;
+  document.getElementById('panels').innerHTML=POSITIONS.map((pos,i)=>{
+    if(i!==state.activeTab)return'<div class="panel"></div>';
+    const a=archState[pos.id],warns=getWarnings(pos.id,false);
+    // Copy ranking
+    const others=POSITIONS.filter(p=>p.id!==pos.id&&archState[p.id].ranked.length>0);
+    let copyHTML='';
+    if(!state.submitted[pos.id]&&others.length>0){const opts=others.map(p=>`<option value="${p.id}">${p.name} (${archState[p.id].ranked.length})</option>`).join('');copyHTML=`<div class="copy-ranking-box"><span class="copy-label">⚡ Copy from</span><select onchange="copyRanking('${pos.id}',this.value);this.selectedIndex=0"><option value="">Select...</option>${opts}</select></div>`}
+    const topBar=`<div class="top-bar"><div class="archetype-desc">${pos.roles.map(r=>`<span class="archetype-role">${r}</span>`).join('')}</div>${copyHTML}</div>`;
+    const done=a.placedSet.size+a.binnedSet.size,tot=totalPS(pos.id),apct=tot>0?Math.round(done/tot*100):0;
+    const progHTML=`<div class="arch-prog"><div class="arch-prog-info"><span class="ap-left">${a.ranked.length} ranked · ${a.binned.length} binned · ${tot-done} remaining</span><span class="ap-pct">${apct}%</span></div><div class="arch-prog-track"><div class="arch-prog-fill" style="width:${apct}%"></div></div></div>`;
+    const catBarHTML=renderCatBarHTML(pos.id);
+    const rankHTML=renderRankHTML(pos.id,warns);
+    const binHTML=renderBinHTML(pos.id,warns);
+    const subHTML=renderSubmitHTML(pos.id,warns);
+    return`<div class="panel active">${topBar}${progHTML}${catBarHTML}<div class="rank-lbl"><span>Ranking — ${a.ranked.length}</span>${a.ranked.length>0?`<button class="btn-clear" onclick="clr('${pos.id}')">Clear all</button>`:''}</div><div class="rank-area" id="ra_${pos.id}">${rankHTML}</div><div class="bin-section"><div class="bin-lbl"><span>No Benefit</span><span>${a.binned.length}</span></div><div class="bin-strip" id="bs_${pos.id}">${binHTML}</div></div><div class="submit-area">${subHTML}</div><div class="submit-feedback" id="sf_${pos.id}"></div></div>`;
   }).join('');
+  POSITIONS.forEach((pos,i)=>{if(i!==state.activeTab)return;const bs=document.getElementById(`bs_${pos.id}`);if(!bs)return;bs.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';bs.classList.add('drag-over')});bs.addEventListener('dragleave',()=>bs.classList.remove('drag-over'));bs.addEventListener('drop',e=>{e.preventDefault();bs.classList.remove('drag-over');handleBinDrop(pos.id)})});
+  bindFeedDrag();bindRankDrag();bindBinDrag();
+  const allDone=Object.values(state.submitted).every(Boolean);const banner=document.getElementById('completionBanner');if(allDone){banner.classList.add('show');document.getElementById('completionText').textContent=`Thank you, ${document.getElementById('respondentName').value.trim()}! All rankings have been sent.`}else banner.classList.remove('show');
 }
 
-function renderPanels() {
-  gc = 0;
-  document.getElementById('panels').innerHTML = POSITIONS.map((pos, i) => {
-    const act = i===state.activeTab;
-    if (!act) return `<div class="panel"></div>`;
-    const ranking = state.rankings[pos.id];
-    const rids = new Set(ranking.map(r=>r.id));
-    const cats = catsFor(pos);
+function renderCatBarHTML(posId){const a=archState[posId],cats=catsFor(POSITIONS.find(p=>p.id===posId)),cat=cats[a.catIdx];if(!cat)return'';const ph=PHASES[a.phaseIdx],items=feedItems(posId),remaining=items.filter(f=>!f.done).length,cd=curCatDone(posId);let content='';if(cd){const hasNext=!allCatsDone(posId);content=`<div class="cat-done-msg"><span>✓ All ${cat.name.toLowerCase()} ${ph.label.toLowerCase()} placed</span>${hasNext?`<button class="btn-next-cat" onclick="advanceCat('${posId}')">Next category ▶</button>`:''}</div>`}else{content=`<div class="cat-items">${items.map(item=>{const eid=item.id.replace(/'/g,"\\'");return`<div class="fi${item.done?' done':''}" draggable="${!item.done}" data-fid="${item.id}" data-posid="${posId}">${ic(item,34)}<button class="fi-x" onclick="event.stopPropagation();binPS('${posId}','${eid}')">✕</button><div class="fi-tip">${item.id}</div></div>`}).join('')}</div>`}return`<div class="cat-bar"><div class="cat-top"><span class="cat-name" style="color:${cat.color}">${cat.name}</span><span class="cat-phase">${ph.label}</span><span class="cat-count">${remaining} remaining</span>${!cd&&remaining>0?`<button class="btn-add-all" onclick="addAllCat('${posId}')">Add all</button>`:''}</div>${content}</div>`}
 
-    const others = POSITIONS.filter(p=>p.id!==pos.id && state.rankings[p.id].length>0);
-    let copyHTML = '';
-    if (!state.submitted[pos.id] && others.length>0) {
-      const opts = others.map(p=>`<option value="${p.id}">${p.name} (${state.rankings[p.id].length})</option>`).join('');
-      copyHTML = `<div class="copy-ranking-box"><span class="copy-label">⚡ Copy from</span><select onchange="copyRanking('${pos.id}',this.value);this.selectedIndex=0"><option value="">Select...</option>${opts}</select></div>`;
-    }
-    const topBar = `<div class="top-bar"><div class="archetype-desc">${pos.roles.map(r=>`<span class="archetype-role">${r}</span>`).join('')}</div>${copyHTML}</div>`;
+function renderRankHTML(posId,warns){const a=archState[posId],n=a.ranked.length;if(n===0)return`<div class="empty-state" id="ez_${posId}"><div class="es-main">Drag PlayStyles here to rank them</div><button class="btn-add-all-big" onclick="addAllCat('${posId}')">Add all ${catsFor(POSITIONS.find(p=>p.id===posId))[a.catIdx]?.name||''}</button><div class="es-sub">These can be moved to "No Benefit" after</div></div>`;let h='';for(let i=0;i<n;i++){const item=a.ranked[i],isW=warns.rank.has(item.id),cls=(item._jp?' just-placed':'')+(isW?' warn':'');const t=n>1?i/(n-1):0;const bgA=Math.round((1-t*0.85)*100)/100;const txtA=Math.round((1-t*0.6)*100)/100;const numStyle=`background:rgba(232,68,46,${bgA*0.45});color:rgba(255,255,255,${txtA});${i<1?'text-shadow:0 1px 2px rgba(0,0,0,0.3);font-size:10px':''}`;h+=`<div class="dz" data-pos="${i}" data-posid="${posId}"><div class="dz-ghost"></div></div><div class="slot" data-idx="${i}" data-posid="${posId}"><div class="slot-num" style="${numStyle}">${i+1}</div><div class="tile${cls}" data-idx="${i}" data-posid="${posId}" draggable="true">${ic(item,34)}<div class="tile-tip">${item.id}</div></div></div>`}h+=`<div class="dz" data-pos="${n}" data-posid="${posId}"><div class="dz-ghost"></div></div>`;a.ranked.forEach(i=>{i._jp=false});return h}
 
-    // Build set of PS that need their pair added
-    const needsPair = new Set();
-    const checkedPairs = new Set();
-    ranking.forEach(item => {
-      const baseName = item.psData.name;
-      if (!checkedPairs.has(baseName)) {
-        checkedPairs.add(baseName);
-        const hasBase = rids.has(pid(baseName, false));
-        const hasPlus = rids.has(pid(baseName, true));
-        if (hasBase && !hasPlus) needsPair.add(pid(baseName, true));
-        if (hasPlus && !hasBase) needsPair.add(pid(baseName, false));
-      }
-    });
+function renderBinHTML(posId,warns){const a=archState[posId];if(a.binned.length===0)return`<div class="bin-empty">Drag here for PlayStyles with no benefit</div>`;return a.binned.map((item,i)=>`<div class="bin-tile${warns.bin.has(item.id)?' warn':''}" draggable="true" data-bidx="${i}" data-posid="${posId}">${ic(item,24)}<div class="bt-tip">${item.id} — drag back to ranking</div></div>`).join('')}
 
-    let poolHTML = '';
-    cats.forEach(cat => {
-      let base='', plus='';
-      cat.playstyles.forEach(ps => {
-        const bId=pid(ps.name,false), pId=pid(ps.name,true);
-        const bNeed=needsPair.has(bId)?'needs-pair':'';
-        const pNeed=needsPair.has(pId)?'needs-pair':'';
-        base += `<button class="ps-icon-btn ${rids.has(bId)?'ranked':''} ${bNeed}" onclick="addPS('${pos.id}','${ps.name}',false)" ${rids.has(bId)?'disabled':''}>${psIcon(ps,false)}</button>`;
-        plus += `<button class="ps-icon-btn ${rids.has(pId)?'ranked':''} ${pNeed}" onclick="addPS('${pos.id}','${ps.name}',true)" ${rids.has(pId)?'disabled':''}>${psIcon(ps,true)}</button>`;
-      });
-      poolHTML += `<div class="category"><div class="category-header"><span class="category-bar" style="background:${cat.color}"></span><span class="category-name" style="color:${cat.color}">${cat.name}</span><button class="category-add-all" onmouseover="this.style.color='${cat.color}'" onmouseout="this.style.color=''" onclick="addCat('${pos.id}','${cat.name}')">Add all</button></div><div class="ps-row">${base}</div><div class="ps-row">${plus}</div></div>`;
-    });
+function renderSubmitHTML(posId,warns){const a=archState[posId],pos=POSITIONS.find(p=>p.id===posId),name=document.getElementById('respondentName')?.value?.trim()||'',count=a.ranked.length,meetsMin=count>=MIN_PS,hasIssues=warns.baseAbovePlus>0||warns.unpaired.length>0,canSubmit=meetsMin&&name.length>0&&!hasIssues;if(state.submitted[posId])return`<div class="submitted-banner">✓ Submitted — ${pos.name} <button onclick="unlockArchetype('${posId}')" style="margin-left:12px;background:none;border:1px solid rgba(46,204,113,0.3);border-radius:4px;padding:3px 10px;font-size:11px;color:rgba(46,204,113,0.6);cursor:pointer;font-family:'JetBrains Mono',monospace">🔓 Unlock to edit</button></div>`;let lbl;if(!name)lbl='Enter your name to submit';else if(warns.baseAbovePlus>0&&warns.unpaired.length>0)lbl='Fix warnings — ordering & missing pairs';else if(warns.baseAbovePlus>0)lbl=`Fix ${warns.baseAbovePlus} warning${warns.baseAbovePlus>1?'s':''} — base PS ranked above PS+`;else if(warns.unpaired.length>0)lbl=`Missing pairs — add both base & + (${warns.unpaired.length} unpaired)`;else if(!meetsMin)lbl=`Need ${MIN_PS-count} more (${count}/${MIN_PS} minimum)`;else lbl=`Submit ${pos.name} (${count} PlayStyles)`;let explainerHTML='';if(warns.baseAbovePlus>0||warns.unpaired.length>0){let items=[];if(warns.unpaired.length>0){const missing=warns.unpaired.map(u=>`<li>Missing <strong>${u}</strong> — add it to ranking or bin</li>`).join('');items.push(`<strong>⊘ Missing pairs:</strong> Each PlayStyle needs both its base and + version placed.<ul class="fix-list">${missing}</ul>`)}if(warns.baseAbovePlus>0)items.push(`<strong>⚠ Ordering:</strong> A base PlayStyle is ranked higher than its + version. Drag the + above the base.`);explainerHTML=`<div class="submit-explainer">${items.join('<br>')}</div>`}return`<button class="btn-submit" id="sb_${posId}" ${!canSubmit?'disabled':''} style="${canSubmit?`background:linear-gradient(135deg,${pos.accent},${pos.accent}cc)`:''}" onclick="submitArchetype('${posId}')">${lbl}</button>${explainerHTML}`}
 
-    let rankHTML = '';
-    if (!ranking.length) {
-      rankHTML = `<div class="rank-empty"><div class="icon">☰</div>Click playstyles to build your ranking.<div class="sub">Most important at top. Minimum ${MIN_PS} to submit.</div></div>`;
-    } else {
-      rankHTML = `<div class="rank-list" id="rl_${pos.id}">`;
-      const posMap = {};
-      ranking.forEach((item,idx) => { posMap[item.id] = idx; });
+function render(){renderProgress();renderTabs();renderPanels()}
 
-      ranking.forEach((item,idx) => {
-        const nc=item.isPlus?'plus':'base';
-        const eid=item.id.replace(/'/g,"\\'");
-        let warnHTML = '';
-        let warnClasses = '';
-        // Base ranked above its plus
-        if (!item.isPlus) {
-          const plusId = item.psData.name + '+';
-          if (plusId in posMap && posMap[plusId] > idx) {
-            warnHTML = `<span title="Base ranked above + version" style="color:#f26522;font-size:14px;cursor:help;flex-shrink:0;animation:warnPulse 1.5s ease-in-out infinite">⚠</span>`;
-            warnClasses += ' warn-order';
-          }
-        }
-        // Unpaired
-        const baseName = item.psData.name;
-        const hasBase = rids.has(pid(baseName, false));
-        const hasPlus = rids.has(pid(baseName, true));
-        if (hasBase !== hasPlus) {
-          const missing = hasBase ? baseName+'+' : baseName;
-          warnHTML += `<span title="Missing ${missing} — include both or neither" style="color:#e74c3c;font-size:12px;cursor:help;flex-shrink:0;animation:warnPulse 1.5s ease-in-out infinite">⊘</span>`;
-          warnClasses += ' warn-unpaired';
-        }
-        rankHTML += `<div class="rank-item${warnClasses}" draggable="true" data-idx="${idx}" ondragstart="dStart(event,'${pos.id}',${idx})" ondragover="dOver(event,'${pos.id}',${idx})" ondragleave="dLeave(event)" ondrop="dDrop(event,'${pos.id}')" ondragend="dEnd(event,'${pos.id}')"><span class="rank-num">${idx+1}</span><span class="rank-grip">⋮⋮</span>${psIcon(item.psData,item.isPlus,30)}<span class="rank-item-name ${nc}">${item.id}</span>${warnHTML}<span class="rank-cat-label" style="color:${item.color}">${item.category}</span><div class="rank-arrows"><button onclick="mu('${pos.id}',${idx})" ${idx===0?'disabled':''}>▲</button><button onclick="md('${pos.id}',${idx})" ${idx===ranking.length-1?'disabled':''}>▼</button></div><button class="rank-btn-remove" onclick="rm('${pos.id}','${eid}')" title="Remove">✕</button></div>`;
-      });
-      rankHTML += `<div class="rank-drop-end" id="de_${pos.id}" ondragover="dOverEnd(event,'${pos.id}')" ondragleave="dLeaveEnd(event,'${pos.id}')" ondrop="dDrop(event,'${pos.id}')"></div></div>`;
-    }
+function bindFeedDrag(){document.querySelectorAll('.fi:not(.done)').forEach(el=>{el.addEventListener('dragstart',e=>{dragPayload={type:'feed',id:el.dataset.fid,posId:el.dataset.posid};isDragging=true;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',el.dataset.fid);requestAnimationFrame(()=>{el.classList.add('dragging-src');showDZ(el.dataset.posid)})});el.addEventListener('dragend',()=>{el.classList.remove('dragging-src');endDrag()})})}
+function bindRankDrag(){const posId=POSITIONS[state.activeTab]?.id;if(!posId)return;const area=document.getElementById(`ra_${posId}`);if(!area)return;const ez=document.getElementById(`ez_${posId}`);if(ez){ez.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';ez.classList.add('drag-over')});ez.addEventListener('dragleave',()=>ez.classList.remove('drag-over'));ez.addEventListener('drop',e=>{e.preventDefault();ez.classList.remove('drag-over');handleDrop(posId,0)})}area.querySelectorAll('.tile[draggable="true"]').forEach(tile=>{tile.addEventListener('dragstart',e=>{const idx=parseInt(tile.dataset.idx);dragPayload={type:'reorder',id:archState[posId].ranked[idx].id,fromIdx:idx,posId};isDragging=true;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','reorder');requestAnimationFrame(()=>{tile.classList.add('dragging');showDZ(posId)})});tile.addEventListener('dragend',()=>{tile.classList.remove('dragging');endDrag()})});area.querySelectorAll('.slot').forEach(slot=>{slot.addEventListener('dragover',e=>{if(!isDragging)return;e.preventDefault();e.dataTransfer.dropEffect='move';const rect=slot.getBoundingClientRect(),relX=(e.clientX-rect.left)/rect.width,idx=parseInt(slot.dataset.idx);clearHot(posId);if(relX<0.3)activateDZ(posId,idx);else if(relX>0.7)activateDZ(posId,idx+1)});slot.addEventListener('drop',e=>{e.preventDefault();const rect=slot.getBoundingClientRect(),relX=(e.clientX-rect.left)/rect.width,idx=parseInt(slot.dataset.idx);if(relX<0.3)handleDrop(posId,idx);else if(relX>0.7)handleDrop(posId,idx+1)})});area.querySelectorAll('.dz').forEach(dz=>{dz.addEventListener('dragover',e=>{if(!isDragging)return;e.preventDefault();e.dataTransfer.dropEffect='move';clearHot(posId);activateDZ(posId,parseInt(dz.dataset.pos))});dz.addEventListener('drop',e=>{e.preventDefault();handleDrop(posId,parseInt(dz.dataset.pos))})})}
+function bindBinDrag(){const posId=POSITIONS[state.activeTab]?.id;if(!posId)return;document.querySelectorAll(`.bin-tile[data-posid="${posId}"]`).forEach(bt=>{bt.addEventListener('dragstart',e=>{const idx=parseInt(bt.dataset.bidx),item=archState[posId].binned[idx];dragPayload={type:'restore',id:item.id,binIdx:idx,posId};isDragging=true;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',item.id);requestAnimationFrame(()=>showDZ(posId))});bt.addEventListener('dragend',()=>endDrag())})}
 
-    const name=document.getElementById('respondentName')?.value?.trim()||'';
-    const count=ranking.length;
-    const meetsMin=count>=MIN_PS;
-    const warnings = getWarnings(ranking);
-    const hasIssues = warnings.baseAbovePlus > 0 || warnings.unpaired.length > 0;
-    const canSubmit=meetsMin&&name.length>0&&!hasIssues;
+function showDZ(posId){document.querySelectorAll(`#ra_${posId} .dz`).forEach(d=>d.classList.add('vis'))}
+function hideDZ(posId){document.querySelectorAll(`#ra_${posId} .dz`).forEach(d=>{d.classList.remove('vis','hot');const g=d.querySelector('.dz-ghost');if(g)g.innerHTML=''})}
+function activateDZ(posId,pos){clearHot(posId);const dz=document.querySelector(`#ra_${posId} .dz[data-pos="${pos}"]`);if(!dz)return;dz.classList.add('hot');const ghost=dz.querySelector('.dz-ghost');if(ghost&&dragPayload){let item=null;if(dragPayload.type==='feed')item=parse(dragPayload.id);else if(dragPayload.type==='reorder'&&dragPayload.fromIdx!==undefined)item=archState[posId].ranked[dragPayload.fromIdx];else if(dragPayload.type==='restore')item=parse(dragPayload.id);if(item)ghost.innerHTML=ic(item,34)}}
+function clearHot(posId){document.querySelectorAll(`#ra_${posId} .dz.hot`).forEach(d=>{d.classList.remove('hot');const g=d.querySelector('.dz-ghost');if(g)g.innerHTML=''})}
+function endDrag(){const posId=POSITIONS[state.activeTab]?.id;isDragging=false;dragPayload=null;if(posId){hideDZ(posId);clearHot(posId)}}
 
-    let subHTML='';
-    if(state.submitted[pos.id]){
-      subHTML=`<div class="submitted-banner">✓ Submitted — ${pos.name} <button onclick="unlockArchetype('${pos.id}')" style="margin-left:12px;background:none;border:1px solid rgba(46,204,113,0.3);border-radius:4px;padding:3px 10px;font-size:11px;color:rgba(46,204,113,0.6);cursor:pointer;font-family:'JetBrains Mono',monospace">🔓 Unlock to edit</button></div>`;
-    } else {
-      let lbl;
-      if(!name) lbl='Enter your name to submit';
-      else if(warnings.baseAbovePlus>0 && warnings.unpaired.length>0) lbl=`Fix warnings — ordering & missing pairs`;
-      else if(warnings.baseAbovePlus>0) lbl=`Fix ${warnings.baseAbovePlus} warning${warnings.baseAbovePlus>1?'s':''} — base PS ranked above PS+`;
-      else if(warnings.unpaired.length>0) lbl=`Missing pairs — add both base & + (${warnings.unpaired.length} unpaired)`;
-      else if(!meetsMin) lbl=`Need ${MIN_PS-count} more (${count}/${MIN_PS} minimum)`;
-      else lbl=`Submit ${pos.name} (${count} PlayStyles)`;
-      let explainerHTML = '';
-      if (warnings.baseAbovePlus > 0 || warnings.unpaired.length > 0) {
-        let items = [];
-        if (warnings.unpaired.length > 0) {
-          const missing = warnings.unpaired.map(u => {
-            const isBase = !u.endsWith('+');
-            const baseName = isBase ? u : u.slice(0,-1);
-            const has = isBase ? baseName : baseName+'+';
-            const needs = isBase ? baseName+'+' : baseName;
-            return `<li>You've added <strong>${has}</strong> but not <strong>${needs}</strong> — add the missing one, or remove both</li>`;
-          }).join('');
-          items.push(`<strong>⊘ Missing pairs:</strong> Each PlayStyle needs both its base and + version in your ranking.<ul class="fix-list">${missing}</ul>`);
-        }
-        if (warnings.baseAbovePlus > 0) {
-          items.push(`<strong>⚠ Ordering:</strong> A base PlayStyle is ranked higher than its + version. The + is always at least as good — drag it above the base.`);
-        }
-        explainerHTML = `<div class="submit-explainer">${items.join('<br>')}</div>`;
-      }
-      subHTML=`<button class="btn-submit" id="sb_${pos.id}" ${!canSubmit?'disabled':''} style="${canSubmit?`background:linear-gradient(135deg,${pos.accent},${pos.accent}cc)`:''}" onclick="submitArchetype('${pos.id}')">${lbl}</button>${explainerHTML}`;
-    }
-    subHTML += `<div class="submit-feedback" id="sf_${pos.id}"></div>`;
+function handleDrop(posId,pos){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='feed'){const id=dragPayload.id;if(a.placedSet.has(id)||a.binnedSet.has(id)){endDrag();render();return}a.ranked.splice(pos,0,{...parse(id),_jp:true});a.placedSet.add(id)}else if(dragPayload.type==='reorder'){const from=dragPayload.fromIdx;if(pos===from||pos===from+1){endDrag();render();return}const[item]=a.ranked.splice(from,1);let to=pos;if(to>from)to--;a.ranked.splice(to,0,item)}else if(dragPayload.type==='restore'){const item=a.binned.splice(dragPayload.binIdx,1)[0];a.binnedSet.delete(item.id);a.ranked.splice(pos,0,{...parse(item.id),_jp:true});a.placedSet.add(item.id)}endDrag();render();saveState()}
+function handleBinDrop(posId){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='feed')binPS(posId,dragPayload.id);else if(dragPayload.type==='reorder'){const[item]=a.ranked.splice(dragPayload.fromIdx,1);a.placedSet.delete(item.id);a.binned.push(item);a.binnedSet.add(item.id)}endDrag();render();saveState()}
 
-    return `<div class="panel active">${topBar}<div class="panel-content"><div class="pool-side"><div class="pool-header"><h3>Available PlayStyles</h3><span>Click to add →</span></div>${poolHTML}</div><div class="rank-side"><div class="rank-header"><h3>Your Ranking — ${count} PS</h3>${count>0?`<button class="btn-clear" onclick="clr('${pos.id}')">Clear all</button>`:''}</div>${rankHTML}<div class="submit-area">${subHTML}</div></div></div></div>`;
-  }).join('');
+function binPS(posId,id){if(state.submitted[posId])return;const a=archState[posId];if(a.placedSet.has(id)||a.binnedSet.has(id))return;a.binned.push(parse(id));a.binnedSet.add(id);render();saveState()}
+function addAllCat(posId){if(state.submitted[posId])return;const a=archState[posId];feedItems(posId).filter(f=>!f.done).forEach(item=>{a.ranked.push({...parse(item.id)});a.placedSet.add(item.id)});render();saveState()}
+function advanceCat(posId){const a=archState[posId],cats=catsFor(POSITIONS.find(p=>p.id===posId));for(let p=0;p<PHASES.length;p++)for(let c=0;c<cats.length;c++){const pi=(a.phaseIdx+p)%PHASES.length,ci=(p===0?a.catIdx+(c+1):c)%cats.length;if(cats[ci].ps.some(n=>{const id=n+(PHASES[pi].plus?'+':'');return!a.placedSet.has(id)&&!a.binnedSet.has(id)})){a.catIdx=ci;a.phaseIdx=pi;render();saveState();return}}}
+function clr(posId){if(state.submitted[posId])return;const a=archState[posId];a.ranked=[];a.binned=[];a.placedSet.clear();a.binnedSet.clear();a.catIdx=0;a.phaseIdx=0;render();saveState()}
+function switchTab(i){state.activeTab=i;render();saveState()}
+function copyRanking(targetId,sourceId){if(!sourceId||state.submitted[targetId])return;const srcA=archState[sourceId];if(!srcA.ranked.length)return;const tCats=catsFor(POSITIONS.find(p=>p.id===targetId)),avail=new Set();tCats.forEach(c=>c.ps.forEach(n=>{avail.add(pid(n,false));avail.add(pid(n,true))}));const a=archState[targetId];a.ranked=srcA.ranked.filter(item=>avail.has(item.id)).map(item=>({...parse(item.id)}));a.binned=srcA.binned.filter(item=>avail.has(item.id)).map(item=>({...parse(item.id)}));a.placedSet=new Set(a.ranked.map(r=>r.id));a.binnedSet=new Set(a.binned.map(b=>b.id));const cats=tCats;let found=false;for(let pi=0;pi<PHASES.length&&!found;pi++)for(let ci=0;ci<cats.length&&!found;ci++){if(cats[ci].ps.some(n=>{const id=n+(PHASES[pi].plus?'+':'');return!a.placedSet.has(id)&&!a.binnedSet.has(id)})){a.catIdx=ci;a.phaseIdx=pi;found=true}}render();saveState()}
+function unlockArchetype(posId){state.submitted[posId]=false;render();saveState()}
 
-  const allDone=Object.values(state.submitted).every(Boolean);
-  const banner=document.getElementById('completionBanner');
-  if(allDone){
-    banner.classList.add('show');
-    document.getElementById('completionText').textContent=`Thank you, ${document.getElementById('respondentName').value.trim()}! All rankings have been sent.`;
-  } else banner.classList.remove('show');
-}
+async function submitArchetype(posId){const name=document.getElementById('respondentName').value.trim(),a=archState[posId];if(!name||a.ranked.length<MIN_PS)return;const warns=getWarnings(posId,true);if(warns.baseAbovePlus>0||warns.unpaired.length>0)return;const pos=POSITIONS.find(p=>p.id===posId),btn=document.getElementById(`sb_${posId}`);if(btn){btn.classList.add('sending');btn.textContent='Sending...'}state.submitted[posId]=true;state.nameLocked=true;const nameInput=document.getElementById('respondentName');nameInput.disabled=true;nameInput.style.opacity='0.5';saveState();const doneCount=POSITIONS.filter(p=>state.submitted[p.id]).length,totalCount=POSITIONS.length;const rankList=a.ranked.slice(0,20).map((item,idx)=>`**${idx+1}.** ${item.id}`).join('\n'),more=a.ranked.length>20?`\n_...and ${a.ranked.length-20} more_`:'',binnedList=a.binned.length>0?`\n\n**Binned (${a.binned.length}):** ${a.binned.map(b=>b.id).join(', ')}`:'';const embed={title:`📊 ${pos.name}`,description:`**${name}** submitted rankings (${doneCount}/${totalCount} archetypes)\n\n${rankList}${more}${binnedList}`,color:parseInt(pos.accent.replace('#',''),16),footer:{text:`${a.ranked.length} ranked · ${a.binned.length} binned`},timestamp:new Date().toISOString()};const csv=buildCumulativeCSV(),csvBlob=new Blob([csv],{type:'text/csv'}),csvFile=new File([csvBlob],`${name.replace(/\s+/g,'_')}_rankings_${doneCount}of${totalCount}.csv`,{type:'text/csv'});const formData=new FormData();formData.append('payload_json',JSON.stringify({embeds:[embed]}));formData.append('files[0]',csvFile);const fb=document.getElementById(`sf_${posId}`);try{const resp=await fetch(DISCORD_WEBHOOK,{method:'POST',body:formData});if(resp.ok){if(fb){fb.className='submit-feedback success';fb.textContent='✓ Submitted and sent to server'}}else throw new Error(`HTTP ${resp.status}`)}catch(err){console.warn('Discord send failed:',err);if(fb){fb.className='submit-feedback error';fb.textContent='⚠ Saved locally but server send failed — data is safe'}}setTimeout(()=>{const nextIdx=POSITIONS.findIndex(p=>!state.submitted[p.id]);if(nextIdx!==-1)state.activeTab=nextIdx;render()},1000)}
 
-function render() { renderProgress(); renderTabs(); renderPanels(); }
+function downloadAll(){const name=document.getElementById('respondentName').value.trim(),csv=buildCumulativeCSV(),blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${name.replace(/\s+/g,'_')}_all_rankings.csv`;a.click();URL.revokeObjectURL(url)}
 
-function switchTab(i) { state.activeTab=i; render(); saveState(); }
-
-function addPS(posId, name, isPlus) {
-  if(state.submitted[posId]) return;
-  const id=pid(name,isPlus);
-  if(state.rankings[posId].some(r=>r.id===id)) return;
-  const info=findPS(name); if(!info) return;
-  state.rankings[posId].push({id,isPlus,psData:info.psData,category:info.category,color:info.color});
-  render(); saveState();
-}
-
-function rm(posId, itemId) { if(state.submitted[posId]) return; state.rankings[posId]=state.rankings[posId].filter(r=>r.id!==itemId); render(); saveState(); }
-function mu(posId, idx) { if(idx===0||state.submitted[posId]) return; const a=state.rankings[posId];[a[idx-1],a[idx]]=[a[idx],a[idx-1]]; render(); saveState(); }
-function md(posId, idx) { const a=state.rankings[posId]; if(idx>=a.length-1||state.submitted[posId]) return; [a[idx],a[idx+1]]=[a[idx+1],a[idx]]; render(); saveState(); }
-function clr(posId) { if(state.submitted[posId]) return; state.rankings[posId]=[]; render(); saveState(); }
-
-function addCat(posId, catName) {
-  if(state.submitted[posId]) return;
-  const cat=ALL_CATS.find(c=>c.name===catName); if(!cat) return;
-  const rids=new Set(state.rankings[posId].map(r=>r.id));
-  cat.playstyles.forEach(ps=>{
-    [false,true].forEach(isPlus=>{
-      const id=pid(ps.name,isPlus);
-      if(!rids.has(id)){state.rankings[posId].push({id,isPlus,psData:ps,category:cat.name,color:cat.color});rids.add(id);}
-    });
-  });
-  render(); saveState();
-}
-
-function unlockArchetype(posId) { state.submitted[posId]=false; render(); saveState(); }
-
-function copyRanking(targetId, sourceId) {
-  if(!sourceId||state.submitted[targetId]) return;
-  const source=state.rankings[sourceId]; if(!source?.length) return;
-  const tCats=catsFor(POSITIONS.find(p=>p.id===targetId));
-  const avail=new Set();
-  tCats.forEach(c=>c.playstyles.forEach(ps=>{avail.add(pid(ps.name,false));avail.add(pid(ps.name,true));}));
-  const copied=source.filter(item=>avail.has(item.id)).map(item=>({...item}));
-  if(copied.length){state.rankings[targetId]=copied;render();saveState();}
-}
-
-function clearInsert(posId) {
-  const rl=document.getElementById(`rl_${posId}`); if(!rl) return;
-  rl.querySelectorAll('.rank-item').forEach(el=>el.classList.remove('insert-above'));
-  const de=document.getElementById(`de_${posId}`);
-  if(de) de.classList.remove('insert-here');
-}
-
-function dStart(e, posId, idx) {
-  dragFrom=idx;
-  e.dataTransfer.effectAllowed='move';
-  e.dataTransfer.setData('text/plain', idx);
-  requestAnimationFrame(()=>{const el=e.target.closest('.rank-item');if(el)el.classList.add('dragging');});
-}
-
-function dOver(e, posId, idx) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect='move';
-  if(dragFrom===null) return;
-  clearInsert(posId);
-  const rect=e.currentTarget.getBoundingClientRect();
-  const above=e.clientY<rect.top+rect.height/2;
-  let insertAt=above?idx:idx+1;
-  if(insertAt===dragFrom||insertAt===dragFrom+1){dragTarget=null;return;}
-  dragTarget=insertAt;
-  if(above){e.currentTarget.classList.add('insert-above');}
-  else{
-    const next=e.currentTarget.nextElementSibling;
-    if(next&&next.classList.contains('rank-item')){next.classList.add('insert-above');}
-    else{const de=document.getElementById(`de_${posId}`);if(de)de.classList.add('insert-here');}
-  }
-}
-
-function dLeave(e) {
-  const r=e.currentTarget.getBoundingClientRect();
-  if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)
-    e.currentTarget.classList.remove('insert-above');
-}
-
-function dOverEnd(e, posId) {
-  e.preventDefault(); e.dataTransfer.dropEffect='move';
-  if(dragFrom===null) return;
-  clearInsert(posId);
-  const len=state.rankings[posId].length;
-  if(dragFrom===len-1){dragTarget=null;return;}
-  dragTarget=len;
-  const de=document.getElementById(`de_${posId}`);
-  if(de) de.classList.add('insert-here');
-}
-
-function dLeaveEnd(e, posId) {
-  const de=document.getElementById(`de_${posId}`);
-  if(de) de.classList.remove('insert-here');
-}
-
-function dDrop(e, posId) {
-  e.preventDefault();
-  clearInsert(posId);
-  if(dragFrom===null||dragTarget===null||state.submitted[posId]){dReset();return;}
-  const arr=state.rankings[posId];
-  const[item]=arr.splice(dragFrom,1);
-  let to=dragTarget;
-  if(to>dragFrom) to--;
-  arr.splice(to,0,item);
-  dReset(); render(); saveState();
-}
-
-function dEnd(e, posId) { clearInsert(posId); dReset(); }
-function dReset() { dragFrom=null; dragTarget=null; document.querySelectorAll('.rank-item.dragging').forEach(el=>el.classList.remove('dragging')); }
-
-async function submitArchetype(posId) {
-  const name=document.getElementById('respondentName').value.trim();
-  const ranking=state.rankings[posId];
-  if(!name||ranking.length<MIN_PS) return;
-  const warnings = getWarnings(ranking);
-  if(warnings.baseAbovePlus>0||warnings.unpaired.length>0) return;
-
-  const pos=POSITIONS.find(p=>p.id===posId);
-  const btn=document.getElementById(`sb_${posId}`);
-  if(btn){btn.classList.add('sending');btn.textContent='Sending...';}
-
-  state.submitted[posId]=true;
-  state.nameLocked=true;
-  const nameInput=document.getElementById('respondentName');
-  nameInput.disabled=true;
-  nameInput.style.opacity='0.5';
-  saveState();
-
-  const doneCount=POSITIONS.filter(p=>state.submitted[p.id]).length;
-  const totalCount=POSITIONS.length;
-
-  const rankList=ranking.slice(0,20).map((item,idx)=>`**${idx+1}.** ${item.id}`).join('\n');
-  const more=ranking.length>20?`\n_...and ${ranking.length-20} more_`:'';
-
-  const embed = {
-    title: `📊 ${pos.name}`,
-    description: `**${name}** submitted rankings (${doneCount}/${totalCount} archetypes)\n\n${rankList}${more}`,
-    color: parseInt(pos.accent.replace('#',''),16),
-    footer: { text: `${ranking.length} PlayStyles ranked` },
-    timestamp: new Date().toISOString()
-  };
-
-  const csv = buildCumulativeCSV();
-  const csvBlob = new Blob([csv], {type:'text/csv'});
-  const csvFile = new File([csvBlob], `${name.replace(/\s+/g,'_')}_rankings_${doneCount}of${totalCount}.csv`, {type:'text/csv'});
-
-  const formData = new FormData();
-  formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
-  formData.append('files[0]', csvFile);
-
-  const fb=document.getElementById(`sf_${posId}`);
-
-  try {
-    const resp = await fetch(DISCORD_WEBHOOK, { method: 'POST', body: formData });
-    if(resp.ok) {
-      if(fb){fb.className='submit-feedback success';fb.textContent='✓ Submitted and sent to server';}
-    } else {
-      throw new Error(`HTTP ${resp.status}`);
-    }
-  } catch(err) {
-    console.warn('Discord send failed:', err);
-    if(fb){fb.className='submit-feedback error';fb.textContent='⚠ Saved locally but server send failed — data is safe, we can retrieve it later';}
-  }
-
-  setTimeout(()=>{
-    const nextIdx=POSITIONS.findIndex(p=>!state.submitted[p.id]);
-    if(nextIdx!==-1) state.activeTab=nextIdx;
-    render();
-  }, 1000);
-}
-
-function downloadAll() {
-  const name=document.getElementById('respondentName').value.trim();
-  const csv=buildCumulativeCSV();
-  const blob=new Blob([csv],{type:'text/csv'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');
-  a.href=url;a.download=`${name.replace(/\s+/g,'_')}_all_rankings.csv`;a.click();
-  URL.revokeObjectURL(url);
-}
-
-document.getElementById('respondentName').addEventListener('input',()=>{renderPanels();saveState();});
-const loaded=loadState();
-if(loaded) showSave('Previous session restored');
-render();
+document.addEventListener('dragover',e=>{if(!isDragging)return;const posId=POSITIONS[state.activeTab]?.id;if(!posId)return;const area=document.getElementById(`ra_${posId}`);if(!area)return;const r=area.getBoundingClientRect();if(e.clientX<r.left-10||e.clientX>r.right+10||e.clientY<r.top-10||e.clientY>r.bottom+10)clearHot(posId)});
+document.getElementById('respondentName').addEventListener('input',()=>{renderPanels();saveState()});
+let resizeT;window.addEventListener('resize',()=>{clearTimeout(resizeT);resizeT=setTimeout(render,100)});
+const loaded=loadState();if(loaded)showSave('Previous session restored');render();
 </script>
 </body>
 </html>
