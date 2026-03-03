@@ -13,7 +13,9 @@
     --bg-card: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.06);
     --text-primary: #e6e6e6; --text-secondary: rgba(255,255,255,0.55);
     --text-muted: rgba(255,255,255,0.3);
-    --gg-red: #e8442e; --gg-orange: #f26522; --gg-gold: #d4af37; --green: #2ecc71;
+    --gg-red: #e8442e; --gg-orange: #f59e0b; --gg-gold: #d4af37; --green: #2ecc71;
+    --cat-scoring: #e74c3c; --cat-passing: #3498db; --cat-defending: #2ecc71;
+    --cat-ballcontrol: #9b59b6; --cat-physical: #9ca3af; --cat-goalkeeping: #f472b6;
   }
   body {
     min-height: 100vh;
@@ -57,7 +59,8 @@
   .tab-badge { padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
   .tab .tab-label { font-weight: 400; font-size: 11px; }
   .tab.active .tab-label { font-weight: 600; }
-  .tab-status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .tab-dot { width: 6px; height: 6px; border-radius: 50%; margin-left: 2px; flex-shrink: 0; }
+  
 
   /* ── Top bar / Copy ── */
   .top-bar { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
@@ -71,67 +74,84 @@
   .panel { display: none; }
   .panel.active { display: block; }
 
-  /* ── Category bar ── */
-  .cat-bar { padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; }
-  .cat-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .cat-name { font-size: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
-  .cat-phase { font-size: 9px; font-family: 'JetBrains Mono', monospace; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1px; padding: 2px 7px; border-radius: 3px; background: rgba(255,255,255,0.06); }
-  .cat-count { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: rgba(255,255,255,0.5); margin-left: auto; }
-  .btn-add-all { padding: 4px 12px; border-radius: 5px; border: 1px solid rgba(232,68,46,0.2); background: rgba(232,68,46,0.08); color: var(--gg-red); font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600; cursor: pointer; transition: all .15s; margin-left: 6px; }
-  .btn-add-all:hover { background: rgba(232,68,46,0.15); border-color: rgba(232,68,46,0.3); }
-  .cat-items { display: flex; gap: 4px; flex-wrap: wrap; }
-  .cat-done-msg { padding: 8px 0; text-align: center; }
-  .cat-done-msg span { font-size: 11px; color: rgba(46,204,113,0.8); font-family: 'JetBrains Mono', monospace; }
-  .btn-next-cat { padding: 5px 14px; border-radius: 5px; border: 1px solid rgba(46,204,113,0.2); background: rgba(46,204,113,0.08); color: var(--green); font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600; cursor: pointer; transition: all .15s; margin-left: 10px; }
-  .btn-next-cat:hover { background: rgba(46,204,113,0.15); border-color: rgba(46,204,113,0.3); }
+  /* ── Category legend ── */
+  .cat-legend { display: flex; gap: 14px; padding: 8px 14px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+  .cat-legend-title { font-size: 9px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.3); margin-right: 4px; }
+  .cat-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: rgba(255,255,255,0.5); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
+  .cat-legend-dot { width: 7px; height: 7px; border-radius: 2px; }
 
-  /* ── Feed items ── */
-  .fi { position: relative; width: 50px; height: 50px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: center; cursor: grab; transition: all .15s; }
-  .fi:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); }
-  .fi:active { cursor: grabbing; transform: scale(.95); }
-  .fi.done { opacity: .12; pointer-events: none; cursor: default; }
-  .fi.dragging-src { opacity: .15; }
-  .fi .fi-x { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; border-radius: 50%; background: rgba(231,76,60,0.85); border: 2px solid var(--bg-primary); color: #fff; font-size: 9px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .1s; z-index: 5; line-height: 1; }
-  .fi:not(.done):hover .fi-x { opacity: 1; }
-  .fi .fi-tip { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); padding: 2px 7px; border-radius: 3px; background: rgba(0,0,0,.95); font-size: 8px; color: rgba(255,255,255,.8); white-space: nowrap; pointer-events: none; z-index: 20; display: none; font-family: 'JetBrains Mono', monospace; }
-  .fi:hover .fi-tip { display: block; }
+  /* ── Instructions banner ── */
+  .instructions-banner { padding: 10px 16px; border-radius: 8px; background: rgba(232,68,46,0.06); border: 1px solid rgba(232,68,46,0.15); margin-bottom: 12px; font-size: 12px; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 8px; }
+  .instructions-banner strong { color: rgba(255,255,255,0.85); }
+  .instructions-banner .ib-icon { font-size: 16px; flex-shrink: 0; }
 
   /* ── Ranking area ── */
-  .rank-lbl { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.7); font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+  .rank-lbl { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.7); font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
   .rank-lbl .btn-clear { background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 8px; font-size: 10px; color: rgba(255,255,255,0.4); cursor: pointer; font-family: 'JetBrains Mono', monospace; }
   .rank-lbl .btn-clear:hover { color: #e74c3c; border-color: rgba(231,76,60,0.3); }
+  .rank-btns { display: flex; gap: 6px; }
+  .btn-reset-baseline { background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 8px; font-size: 10px; color: rgba(255,255,255,0.4); cursor: pointer; font-family: 'JetBrains Mono', monospace; }
+  .btn-reset-baseline:hover { color: var(--gg-orange); border-color: rgba(245,158,11,0.3); }
+  .changes-badge { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--gg-orange); font-weight: 600; }
   .rank-area { display: flex; flex-wrap: wrap; align-items: flex-start; min-height: 60px; gap: 0; }
 
-  .slot { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-  .slot-num { font-size: 9px; font-family: 'JetBrains Mono', monospace; font-weight: 700; height: 16px; line-height: 16px; text-align: center; width: 50px; border-radius: 3px 3px 0 0; }
-  .tile { width: 50px; height: 50px; position: relative; border-radius: 0 0 6px 6px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; cursor: grab; transition: background .15s, box-shadow .15s, opacity .15s, transform .15s; }
+  .slot { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; position: relative; }
+  .slot-num { font-size: 9px; font-family: 'JetBrains Mono', monospace; font-weight: 700; height: 16px; line-height: 16px; text-align: center; width: 62px; border-radius: 3px 3px 0 0; }
+  .tile { width: 62px; height: 62px; position: relative; border-radius: 0 0 6px 6px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; cursor: grab; transition: background .15s, box-shadow .15s, opacity .15s, transform .15s; }
+
+  /* Drop zones as overlays on left/right of each slot */
+  .slot .dz-left, .slot .dz-right { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 15; display: none; }
+  .slot .dz-left { left: 0; }
+  .slot .dz-right { right: 0; }
+  .dragging-active .slot .dz-left, .dragging-active .slot .dz-right { display: block; }
+  .slot .dz-left.hot, .slot .dz-right.hot { z-index: 16; }
+  .slot .dz-left.hot::before, .slot .dz-right.hot::before {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 4px;
+    background: var(--gg-red); border-radius: 2px;
+    box-shadow: 0 0 12px rgba(232,68,46,0.6);
+    animation: dzLine .8s ease-in-out infinite;
+  }
+  .slot .dz-left.hot::before { left: -2px; }
+  .slot .dz-right.hot::before { right: -2px; }
+  @keyframes dzLine { 0%,100% { box-shadow: 0 0 6px rgba(232,68,46,0.3); } 50% { box-shadow: 0 0 16px rgba(232,68,46,0.7); } }
+
+  /* End drop zone — sits after last tile */
+  .dz-end { display: none; width: 62px; min-height: 66px; align-self: stretch; border-radius: 6px; align-items: center; justify-content: center; flex-shrink: 0; }
+  .dragging-active .dz-end { display: flex; border: 2px dashed rgba(232,68,46,0.15); }
+  .dz-end.hot { border-color: rgba(232,68,46,0.5) !important; background: rgba(232,68,46,0.06); animation: dzHot .8s ease-in-out infinite; }
+  .dz-end .dz-ghost { display: none; pointer-events: none; opacity: .4; }
+  .dz-end.hot .dz-ghost { display: flex; flex-direction: column; align-items: center; }
   .tile:hover { background: rgba(255,255,255,0.07); }
   .tile:active { cursor: grabbing; }
   .tile.dragging { opacity: .12; transform: scale(.9); }
+
+  /* Category accent line on tiles */
+  .tile::after {
+    content: ''; position: absolute; bottom: 0; left: 6px; right: 6px;
+    height: 2px; border-radius: 1px; opacity: 0.5; transition: opacity .15s;
+  }
+  .tile:hover::after { opacity: 0.8; }
+  .tile[data-cat="SCORING"]::after { background: var(--cat-scoring); }
+  .tile[data-cat="PASSING"]::after { background: var(--cat-passing); }
+  .tile[data-cat="DEFENDING"]::after { background: var(--cat-defending); }
+  .tile[data-cat="BALL CONTROL"]::after { background: var(--cat-ballcontrol); }
+  .tile[data-cat="PHYSICAL"]::after { background: var(--cat-physical); }
+  .tile[data-cat="GOALKEEPING"]::after { background: var(--cat-goalkeeping); }
+
   .tile .tile-tip { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); padding: 2px 7px; border-radius: 3px; background: rgba(0,0,0,.95); font-size: 8px; color: rgba(255,255,255,.8); white-space: nowrap; pointer-events: none; z-index: 20; display: none; font-family: 'JetBrains Mono', monospace; }
   .tile:hover .tile-tip { display: block; }
   .tile.just-placed { animation: placed .35s ease-out; }
   @keyframes placed { 0% { background: rgba(232,68,46,.3); transform: scale(1.08); } 100% { background: rgba(255,255,255,.04); transform: scale(1); } }
-  .tile.warn { box-shadow: inset 0 0 0 2px rgba(242,101,34,0.7); animation: warnTile 1.5s ease-in-out infinite; }
-  .tile.pair-hl, .fi.pair-hl, .bin-tile.pair-hl { box-shadow: 0 0 0 2px rgba(255,255,255,0.5); z-index: 10; }
+  .tile.warn { box-shadow: inset 0 0 0 2px rgba(245,158,11,0.7); animation: warnTile 1.5s ease-in-out infinite; }
+  .tile.pair-hl, .bin-tile.pair-hl { box-shadow: 0 0 0 2px rgba(255,255,255,0.5); z-index: 10; }
   .bin-tile.pair-hl { opacity: .7; }
-  @keyframes warnTile { 0%,100% { box-shadow: inset 0 0 0 2px rgba(242,101,34,0.7); } 50% { box-shadow: inset 0 0 0 2px rgba(242,101,34,0.25); } }
+  @keyframes warnTile { 0%,100% { box-shadow: inset 0 0 0 2px rgba(245,158,11,0.7); } 50% { box-shadow: inset 0 0 0 2px rgba(245,158,11,0.25); } }
 
-  /* ── Drop zones ── */
-  .dz { width: 6px; align-self: stretch; border-radius: 3px; transition: width .12s ease, margin .12s ease, background .12s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0; min-height: 64px; overflow: hidden; margin: 0 1px; background: rgba(255,255,255,0.045); }
-  .dz.vis { background: rgba(232,68,46,0.1); animation: dzSoft 3s ease-in-out infinite; }
-  @keyframes dzSoft { 0%,100% { background: rgba(232,68,46,0.04); } 50% { background: rgba(232,68,46,0.12); } }
-  .dz.hot { width: 54px !important; background: rgba(232,68,46,0.1) !important; border: 2px dashed rgba(232,68,46,0.4) !important; border-radius: 6px !important; animation: dzHot .8s ease-in-out infinite !important; margin: 0 2px !important; overflow: visible; }
+  /* Stagger animation for tiles */
+  .slot.anim { opacity: 0; animation: tileIn .25s ease forwards; }
+  @keyframes tileIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
   @keyframes dzHot { 0%,100% { box-shadow: 0 0 6px rgba(232,68,46,0.2); } 50% { box-shadow: 0 0 18px rgba(232,68,46,0.5); } }
-  .dz .dz-ghost { display: none; pointer-events: none; opacity: .4; }
-  .dz.hot .dz-ghost { display: flex; flex-direction: column; align-items: center; }
-
-  .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px; border: 2px dashed rgba(255,255,255,0.08); border-radius: 8px; gap: 8px; transition: all .15s; }
-  .empty-state.drag-over { border-color: rgba(232,68,46,0.35); background: rgba(232,68,46,0.04); }
-  .empty-state .es-main { font-size: 13px; color: rgba(255,255,255,0.5); font-family: 'JetBrains Mono', monospace; }
-  .empty-state .es-sub { font-size: 10px; color: rgba(255,255,255,0.35); font-family: 'JetBrains Mono', monospace; font-style: italic; }
-  .btn-add-all-big { padding: 8px 22px; border-radius: 6px; border: 1px solid rgba(232,68,46,0.2); background: rgba(232,68,46,0.08); color: var(--gg-red); font-size: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 600; cursor: pointer; transition: all .15s; }
-  .btn-add-all-big:hover { background: rgba(232,68,46,0.15); border-color: rgba(232,68,46,0.35); }
 
   /* ── Bin ── */
   .bin-section { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
@@ -139,9 +159,9 @@
   .bin-strip { display: flex; flex-wrap: wrap; gap: 3px; min-height: 28px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.015); border: 1px dashed rgba(255,255,255,0.06); transition: all .15s; }
   .bin-strip.drag-over { background: rgba(231,76,60,0.06); border-color: rgba(231,76,60,0.25); box-shadow: 0 0 12px rgba(231,76,60,0.1); }
   .bin-empty { font-size: 10px; color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace; padding: 4px; }
-  .bin-tile { width: 34px; height: 34px; border-radius: 5px; background: rgba(255,255,255,0.025); display: flex; align-items: center; justify-content: center; position: relative; opacity: .3; cursor: grab; transition: all .15s; }
+  .bin-tile { width: 44px; height: 44px; border-radius: 5px; background: rgba(255,255,255,0.025); display: flex; align-items: center; justify-content: center; position: relative; opacity: .3; cursor: grab; transition: all .15s; }
   .bin-tile:hover { opacity: .55; }
-  .bin-tile.warn { box-shadow: inset 0 0 0 2px rgba(242,101,34,0.55); opacity: .65; }
+  .bin-tile.warn { box-shadow: inset 0 0 0 2px rgba(245,158,11,0.55); opacity: .65; }
   .bin-tile .bt-tip { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); padding: 2px 6px; border-radius: 3px; background: rgba(0,0,0,.95); font-size: 7px; color: rgba(255,255,255,.6); white-space: nowrap; pointer-events: none; z-index: 20; display: none; font-family: 'JetBrains Mono', monospace; }
   .bin-tile:hover .bt-tip { display: block; }
 
@@ -170,7 +190,7 @@
   .arch-prog-track { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.06); overflow: hidden; }
   .arch-prog-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--gg-red), var(--gg-orange)); transition: width .4s; }
 
-  .completion-banner { margin-top: 24px; padding: 16px 20px; border-radius: 10px; background: linear-gradient(135deg, rgba(232,68,46,0.1), rgba(242,101,34,0.05)); border: 1px solid rgba(232,68,46,0.2); text-align: center; display: none; }
+  .completion-banner { margin-top: 24px; padding: 16px 20px; border-radius: 10px; background: linear-gradient(135deg, rgba(232,68,46,0.1), rgba(245,158,11,0.05)); border: 1px solid rgba(232,68,46,0.2); text-align: center; display: none; }
   .completion-banner.show { display: block; }
   .completion-banner h3 { font-size: 16px; font-weight: 600; color: var(--gg-red); margin-bottom: 4px; }
   .completion-banner p { font-size: 13px; color: var(--text-muted); }
@@ -180,37 +200,23 @@
   @media (max-width: 768px) {
     .header, .container, .progress-area, .save-status { padding-left: 16px; padding-right: 16px; }
     .top-bar { flex-direction: column; }
-    .fi { width: 44px; height: 44px; }
   }
 </style>
 </head>
 <body>
-<div class="header"><div class="header-inner"><div class="header-left"><div class="header-brand"><img src="https://www.fut.gg/public-assets/logo.png" alt="FUT.GG" style="height:28px"><span class="header-badge">GG Rating</span></div><h1>PlayStyle Importance Ranking</h1><p>Thank you so much for taking part in the FUT.GG PlayStyle survey! Rank playstyles by importance for each player archetype. Drag to rank, ✕ to bin. 🙏</p></div><a href="https://discord.com/users/268544974654668800" target="_blank" class="contact-btn"><svg width="20" height="15" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.3 37.3 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.7 9 .2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4c-1.8 1-3.6 1.8-5.5 2.6a.2.2 0 00-.1.3 47.6 47.6 0 003.6 5.9.2.2 0 00.3.1 58.6 58.6 0 0017.7-9v-.1c1.4-15-2.3-28.4-9.8-40.1a.2.2 0 00-.1-.1zM23.7 37.3c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.8 7.1-6.3 7.1zm23.2 0c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.7 7.1-6.3 7.1z"/></svg>Questions? Contact Ben</a></div></div>
-<div style="max-width:1300px;margin:16px auto 0;padding:0 32px;"><div style="padding:14px 18px;border-radius:10px;background:rgba(242,101,34,0.08);border:1px solid rgba(242,101,34,0.25);font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;"><strong style="color:#f26522;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">⚠ IMPORTANT — PLEASE READ</strong><br><strong style="color:#fff;">The idea here is to rank <em>every</em> PlayStyle and PlayStyle+ against each other:</strong><br><span style="opacity:0.85">• Trickster+ would always be ranked higher than Base Trickster because you don't need to consider that normally a player has limited PlayStyle+ slots</span><br><span style="opacity:0.85">• Ideally try to rank all PlayStyles, remember you can always use the "Copy" function and then reorder</span></div></div>
+<div class="header"><div class="header-inner"><div class="header-left"><div class="header-brand"><img src="https://www.fut.gg/public-assets/logo.png" alt="FUT.GG" style="height:28px"><span class="header-badge">GG Rating</span></div><h1>PlayStyle Importance Ranking</h1><p>Thank you for taking part in the FUT.GG PlayStyle survey! We've pre-ranked every PlayStyle — adjust the order based on your expertise. Drag to reorder, drag to bin for "No Benefit". 🙏</p></div><a href="https://discord.com/users/268544974654668800" target="_blank" class="contact-btn"><svg width="20" height="15" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.3 37.3 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.7 9 .2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4c-1.8 1-3.6 1.8-5.5 2.6a.2.2 0 00-.1.3 47.6 47.6 0 003.6 5.9.2.2 0 00.3.1 58.6 58.6 0 0017.7-9v-.1c1.4-15-2.3-28.4-9.8-40.1a.2.2 0 00-.1-.1zM23.7 37.3c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.8 7.1-6.3 7.1zm23.2 0c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.7 7.1-6.3 7.1z"/></svg>Questions? Contact Ben</a></div></div>
+<div style="max-width:1300px;margin:16px auto 0;padding:0 32px;"><div style="padding:14px 18px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;"><strong style="color:#f59e0b;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">⚠ IMPORTANT — PLEASE READ</strong><br><strong style="color:#fff;">This is our baseline ranking — adjust it based on your expertise:</strong><br><span style="opacity:0.85">• PlayStyle+ is always ranked above its base version (you don't need to consider limited PS+ slots)</span><br><span style="opacity:0.85">• Drag PlayStyles to reorder, or drag to the "No Benefit" bin if they're irrelevant</span><br><span style="opacity:0.85">• The coloured lines under each tile show the category — use the legend to identify them</span></div></div>
 <div class="progress-area"><div class="progress-label"><span id="progressLabel"></span><span id="progressPct" style="color:var(--gg-red);font-weight:700"></span></div><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div></div>
 <div class="save-status" id="saveStatus"></div>
 <div class="container"><div class="name-bar"><label>Your Name</label><input type="text" id="respondentName" placeholder="e.g. ProPlayer123"></div><div class="tabs" id="tabs"></div><div id="panels"></div><div class="completion-banner" id="completionBanner"><h3>All archetypes submitted ✓</h3><p id="completionText"></p><button class="btn-download" onclick="downloadAll()">Download Backup (CSV)</button></div></div>
-<div class="footer">FUT.GG PlayStyle Ranking Tool v8 — GG Rating Research</div>
+<div class="footer">FUT.GG PlayStyle Ranking Tool v9 — GG Rating Research (Pre-Seeded)</div>
 
 <script>
 const DISCORD_WEBHOOK="https://discord.com/api/webhooks/1477373917030252576/J4KqVpeQFvfBdy3WQ82lGZIWI7TUivtSGulx_vM0Qqc23om7WDTcQwTszNaubqJrEp0r";
-const MIN_PS=30, STORAGE_KEY="futgg_ps_ranking_v8";
+const MIN_PS=30, STORAGE_KEY="futgg_ps_ranking_v9d";
 const IMG="https://game-assets.fut.gg/cdn-cgi/image/quality=85,format=auto,width=180/2026/play-styles";
-const PSD={"Finesse Shot":{img:"0.2"},"Chip Shot":{img:"1.2"},"Power Shot":{img:"2.2"},"Dead Ball":{img:"3.2"},"Acrobatic":{img:"25.2"},"Low Driven":{img:"34.3"},"Game Changer":{img:"37.3"},"Precision Header":{img:"39.3"},"Incisive Pass":{img:"5.3"},"Pinged Pass":{img:"6.2"},"Long Ball Pass":{img:"7.2"},"Tiki Taka":{img:"8.2"},"Whipped Pass":{img:"9.2"},"Inventive":{img:"38.3"},"Jockey":{img:"10.2"},"Block":{img:"11.2"},"Intercept":{img:"12.2"},"Anticipate":{img:"13.2"},"Slide Tackle":{img:"14.2"},"Aerial Fortress":{img:"35.3"},"Technical":{img:"16.2"},"Rapid":{img:"17.2"},"First Touch":{img:"19.2"},"Trickster":{img:"20.2"},"Press Proven":{img:"21.2"},"Bruiser":{img:"15.2"},"Quick Step":{img:"22.2"},"Relentless":{img:"23.2"},"Long Throw":{img:"26.2"},"Enforcer":{img:"36.3"},"Far Throw":{img:"28.3"},"Footwork":{img:"29.3"},"Cross Claimer":{img:"30.3"},"Rush Out":{img:"31.3"},"Far Reach":{img:"32.3"},"Deflector":{img:"33.3"}};
-const ALL_CATS=[
-  {name:"SCORING",color:"#e74c3c",ps:["Finesse Shot","Chip Shot","Power Shot","Dead Ball","Acrobatic","Low Driven","Game Changer","Precision Header"]},
-  {name:"PASSING",color:"#3498db",ps:["Incisive Pass","Pinged Pass","Long Ball Pass","Tiki Taka","Whipped Pass","Inventive"]},
-  {name:"DEFENDING",color:"#2ecc71",ps:["Jockey","Block","Intercept","Anticipate","Slide Tackle","Aerial Fortress"]},
-  {name:"BALL CONTROL",color:"#9b59b6",ps:["Technical","Rapid","First Touch","Trickster","Press Proven"]},
-  {name:"PHYSICAL",color:"#e67e22",ps:["Bruiser","Quick Step","Relentless","Long Throw","Enforcer"]},
-  {name:"GOALKEEPING",color:"#00bcd4",ps:["Far Throw","Footwork","Cross Claimer","Rush Out","Far Reach","Deflector"]},
-];
-// Reversed category order: Physical first, Scoring last. GK gets GK at end.
-const OUTFIELD_CATS_NAMES=["PHYSICAL","BALL CONTROL","DEFENDING","PASSING","SCORING"];
-const GK_CATS_NAMES=["GOALKEEPING","PHYSICAL","BALL CONTROL","DEFENDING","PASSING"];
-function catsFor(pos){const n=pos.isGK?GK_CATS_NAMES:OUTFIELD_CATS_NAMES;return n.map(x=>ALL_CATS.find(c=>c.name===x))}
-const PHASES=[{label:"Base",plus:false},{label:"PlayStyle+",plus:true}];
-// Reversed position order: Physical Striker first, GK last
+const PSD={"Finesse Shot":{img:"0.2",cat:"SCORING"},"Chip Shot":{img:"1.2",cat:"SCORING"},"Power Shot":{img:"2.2",cat:"SCORING"},"Dead Ball":{img:"3.2",cat:"SCORING"},"Acrobatic":{img:"25.2",cat:"SCORING"},"Low Driven":{img:"34.3",cat:"SCORING"},"Game Changer":{img:"37.3",cat:"SCORING"},"Precision Header":{img:"39.3",cat:"SCORING"},"Incisive Pass":{img:"5.3",cat:"PASSING"},"Pinged Pass":{img:"6.2",cat:"PASSING"},"Long Ball Pass":{img:"7.2",cat:"PASSING"},"Tiki Taka":{img:"8.2",cat:"PASSING"},"Whipped Pass":{img:"9.2",cat:"PASSING"},"Inventive":{img:"38.3",cat:"PASSING"},"Jockey":{img:"10.2",cat:"DEFENDING"},"Block":{img:"11.2",cat:"DEFENDING"},"Intercept":{img:"12.2",cat:"DEFENDING"},"Anticipate":{img:"13.2",cat:"DEFENDING"},"Slide Tackle":{img:"14.2",cat:"DEFENDING"},"Aerial Fortress":{img:"35.3",cat:"DEFENDING"},"Technical":{img:"16.2",cat:"BALL CONTROL"},"Rapid":{img:"17.2",cat:"BALL CONTROL"},"First Touch":{img:"19.2",cat:"BALL CONTROL"},"Trickster":{img:"20.2",cat:"BALL CONTROL"},"Press Proven":{img:"21.2",cat:"BALL CONTROL"},"Bruiser":{img:"15.2",cat:"PHYSICAL"},"Quick Step":{img:"22.2",cat:"PHYSICAL"},"Relentless":{img:"23.2",cat:"PHYSICAL"},"Long Throw":{img:"26.2",cat:"PHYSICAL"},"Enforcer":{img:"36.3",cat:"PHYSICAL"},"Far Throw":{img:"28.3",cat:"GOALKEEPING"},"Footwork":{img:"29.3",cat:"GOALKEEPING"},"Cross Claimer":{img:"30.3",cat:"GOALKEEPING"},"Rush Out":{img:"31.3",cat:"GOALKEEPING"},"Far Reach":{img:"32.3",cat:"GOALKEEPING"},"Deflector":{img:"33.3",cat:"GOALKEEPING"}};
+
 const POSITIONS=[
   {id:"physical_st",label:"ST(P)",name:"Physical Striker",accent:"#e67e22",roles:["ST - Advanced Forward","ST - Poacher","ST - Target Forward"]},
   {id:"agile_st",label:"ST(A)",name:"Agile Striker",accent:"#e74c3c",roles:["ST - Advanced Forward","ST - Poacher"]},
@@ -223,111 +229,190 @@ const POSITIONS=[
   {id:"att_fullback",label:"ATT FB",name:"Attacking Fullback",accent:"#3498db",roles:["LB/RB - Wingback","LB/RB - Attacking Wingback"]},
   {id:"def_fullback",label:"DEF FB",name:"Defensive Fullback",accent:"#2ecc71",roles:["LB/RB - Fullback"]},
   {id:"centreback",label:"CB",name:"Centreback",accent:"#2ecc71",roles:["CB - Defender","CB - Stopper","CB - Ball Playing Defender"]},
-  {id:"goalkeeper",label:"GK",name:"Goalkeeper",accent:"#00bcd4",isGK:true,roles:["GK - Goalkeeper","GK - Ball Playing","GK - Sweeper Keeper"]},
+  {id:"goalkeeper",label:"GK",name:"Goalkeeper",accent:"#f472b6",isGK:true,roles:["GK - Goalkeeper","GK - Ball Playing","GK - Sweeper Keeper"]},
 ];
 
+// ══════════════════════════════════════════════════════════════════════
+// BenGG baseline rankings from CSV
+const BASELINES = {
+  physical_st: ["Finesse Shot+","Finesse Shot","Low Driven+","Low Driven","Rapid+","Incisive Pass+","Tiki Taka+","Incisive Pass","Tiki Taka","Technical+","Quick Step+","Rapid","First Touch+","Game Changer+","Press Proven+","Enforcer+","Technical","Game Changer","Quick Step","Press Proven","Pinged Pass+","Pinged Pass","Enforcer","First Touch","Trickster+","Trickster","Relentless+","Relentless","Chip Shot+","Chip Shot","Acrobatic+","Precision Header+","Acrobatic","Precision Header","Inventive+","Inventive","Power Shot+","Long Ball Pass+","Long Ball Pass","Bruiser+","Aerial Fortress+","Aerial Fortress","Bruiser","Whipped Pass+","Whipped Pass","Power Shot","Intercept+","Jockey+","Anticipate+","Jockey","Intercept","Anticipate","Slide Tackle+","Slide Tackle","Dead Ball+","Dead Ball","Block+","Block","Long Throw+","Long Throw"],
+  agile_st: ["Finesse Shot+","Finesse Shot","Low Driven+","Low Driven","Rapid+","Incisive Pass+","Tiki Taka+","Incisive Pass","Tiki Taka","Technical+","Quick Step+","First Touch+","Rapid","Game Changer+","Technical","Game Changer","Quick Step","Press Proven+","Pinged Pass+","Pinged Pass","First Touch","Press Proven","Inventive+","Trickster+","Trickster","Enforcer+","Relentless+","Relentless","Inventive","Chip Shot+","Enforcer","Power Shot+","Chip Shot","Long Ball Pass+","Long Ball Pass","Acrobatic+","Acrobatic","Precision Header+","Precision Header","Bruiser+","Whipped Pass+","Whipped Pass","Bruiser","Aerial Fortress+","Aerial Fortress","Power Shot","Intercept+","Jockey+","Anticipate+","Jockey","Intercept","Anticipate","Slide Tackle+","Slide Tackle","Dead Ball+","Dead Ball","Block+","Block","Long Throw+","Long Throw"],
+  cam_shadow: ["Finesse Shot+","Incisive Pass+","Finesse Shot","Low Driven+","Tiki Taka+","Incisive Pass","Low Driven","Tiki Taka","Rapid+","Technical+","Quick Step+","Rapid","Technical","First Touch+","Quick Step","Pinged Pass+","Pinged Pass","Press Proven+","First Touch","Game Changer+","Game Changer","Press Proven","Inventive+","Inventive","Trickster+","Trickster","Long Ball Pass+","Long Ball Pass","Relentless+","Relentless","Chip Shot+","Chip Shot","Enforcer+","Enforcer","Power Shot+","Power Shot","Acrobatic+","Acrobatic","Whipped Pass+","Whipped Pass","Precision Header+","Precision Header","Bruiser+","Bruiser","Aerial Fortress+","Aerial Fortress","Intercept+","Jockey+","Anticipate+","Jockey","Intercept","Anticipate","Slide Tackle+","Slide Tackle","Block+","Block","Dead Ball+","Dead Ball","Long Throw+","Long Throw"],
+  cam_playmaker: ["Finesse Shot+","Incisive Pass+","Finesse Shot","Tiki Taka+","Low Driven+","Incisive Pass","Tiki Taka","Low Driven","Technical+","Rapid+","Quick Step+","Technical","First Touch+","Rapid","Quick Step","Pinged Pass+","Pinged Pass","Press Proven+","First Touch","Press Proven","Long Ball Pass+","Game Changer+","Long Ball Pass","Game Changer","Inventive+","Inventive","Trickster+","Trickster","Relentless+","Relentless","Chip Shot+","Chip Shot","Enforcer+","Enforcer","Power Shot+","Acrobatic+","Acrobatic","Whipped Pass+","Whipped Pass","Precision Header+","Precision Header","Bruiser+","Bruiser","Aerial Fortress+","Aerial Fortress","Intercept+","Jockey+","Anticipate+","Jockey","Intercept","Power Shot","Anticipate","Slide Tackle+","Slide Tackle","Block+","Block","Dead Ball+","Dead Ball","Long Throw+","Long Throw"],
+  winger: ["Rapid+","Finesse Shot+","Quick Step+","Low Driven+","Rapid","Finesse Shot","Tiki Taka+","Pinged Pass+","Technical+","Quick Step","Incisive Pass+","Low Driven","Tiki Taka","Pinged Pass","Technical","Incisive Pass","First Touch+","Press Proven+","Whipped Pass+","First Touch","Whipped Pass","Game Changer+","Game Changer","Press Proven","Inventive+","Inventive","Relentless+","Relentless","Trickster+","Trickster","Power Shot+","Enforcer+","Enforcer","Chip Shot+","Chip Shot","Long Ball Pass+","Long Ball Pass","Acrobatic+","Acrobatic","Precision Header+","Precision Header","Aerial Fortress+","Aerial Fortress","Bruiser+","Bruiser","Intercept+","Jockey+","Anticipate+","Jockey","Intercept","Power Shot","Anticipate","Slide Tackle+","Slide Tackle","Dead Ball+","Dead Ball","Block+","Block","Long Throw+","Long Throw"],
+  inside_forward: ["Finesse Shot+","Rapid+","Low Driven+","Finesse Shot","Quick Step+","Rapid","Technical+","Tiki Taka+","Incisive Pass+","Low Driven","Tiki Taka","Incisive Pass","Technical","Pinged Pass+","Quick Step","First Touch+","Press Proven+","Pinged Pass","First Touch","Game Changer+","Game Changer","Press Proven","Inventive+","Inventive","Trickster+","Trickster","Whipped Pass+","Power Shot+","Whipped Pass","Relentless+","Relentless","Enforcer+","Enforcer","Chip Shot+","Chip Shot","Long Ball Pass+","Long Ball Pass","Acrobatic+","Acrobatic","Precision Header+","Precision Header","Aerial Fortress+","Aerial Fortress","Bruiser+","Bruiser","Intercept+","Jockey+","Anticipate+","Jockey","Intercept","Power Shot","Anticipate","Slide Tackle+","Slide Tackle","Block+","Block","Dead Ball+","Dead Ball","Long Throw+","Long Throw"],
+  box_to_box: ["Tiki Taka+","Finesse Shot+","Incisive Pass+","Intercept+","Pinged Pass+","Intercept","Incisive Pass","Tiki Taka","Low Driven+","Bruiser+","Quick Step+","Jockey+","Technical+","Finesse Shot","Anticipate+","Pinged Pass","Bruiser","Jockey","Anticipate","Technical","First Touch+","First Touch","Low Driven","Quick Step","Rapid+","Press Proven+","Rapid","Press Proven","Relentless+","Relentless","Long Ball Pass+","Long Ball Pass","Inventive+","Game Changer+","Game Changer","Inventive","Trickster+","Trickster","Chip Shot+","Chip Shot","Enforcer+","Enforcer","Power Shot+","Slide Tackle+","Block+","Slide Tackle","Block","Aerial Fortress+","Aerial Fortress","Acrobatic+","Precision Header+","Acrobatic","Precision Header","Whipped Pass+","Whipped Pass","Power Shot","Dead Ball+","Dead Ball","Long Throw+","Long Throw"],
+  def_mid: ["Intercept+","Tiki Taka+","Intercept","Bruiser+","Pinged Pass+","Jockey+","Incisive Pass+","Tiki Taka","Pinged Pass","Anticipate+","Incisive Pass","Bruiser","Jockey","Quick Step+","Anticipate","Quick Step","Finesse Shot+","Press Proven+","First Touch+","Technical+","Long Ball Pass+","Press Proven","First Touch","Long Ball Pass","Low Driven+","Finesse Shot","Relentless+","Slide Tackle+","Technical","Block+","Low Driven","Relentless","Slide Tackle","Block","Inventive+","Game Changer+","Game Changer","Inventive","Aerial Fortress+","Enforcer+","Aerial Fortress","Enforcer","Power Shot+","Rapid+","Rapid","Precision Header+","Precision Header","Acrobatic+","Whipped Pass+","Acrobatic","Whipped Pass","Chip Shot+","Chip Shot","Trickster+","Trickster","Power Shot","Dead Ball+","Dead Ball","Long Throw+","Long Throw"],
+  att_fullback: ["Quick Step+","Tiki Taka+","Pinged Pass+","Intercept+","Rapid+","Intercept","Bruiser+","Quick Step","Jockey+","Incisive Pass+","Tiki Taka","Pinged Pass","Anticipate+","Rapid","Jockey","Incisive Pass","Bruiser","Anticipate","Whipped Pass+","Whipped Pass","Press Proven+","First Touch+","Technical+","Relentless+","Relentless","Technical","Long Ball Pass+","Press Proven","First Touch","Finesse Shot+","Low Driven+","Finesse Shot","Low Driven","Inventive+","Long Ball Pass","Inventive","Slide Tackle+","Slide Tackle","Block+","Block","Game Changer+","Enforcer+","Game Changer","Power Shot+","Enforcer","Aerial Fortress+","Aerial Fortress","Long Throw+","Long Throw","Precision Header+","Precision Header","Acrobatic+","Acrobatic","Chip Shot+","Chip Shot","Trickster+","Trickster","Power Shot","Dead Ball+","Dead Ball"],
+  def_fullback: ["Bruiser+","Intercept+","Jockey+","Quick Step+","Intercept","Anticipate+","Quick Step","Bruiser","Jockey","Anticipate","Pinged Pass+","Tiki Taka+","Pinged Pass","Tiki Taka","Block+","Incisive Pass+","Slide Tackle+","Incisive Pass","Block","Relentless+","Slide Tackle","Relentless","Press Proven+","Press Proven","Long Ball Pass+","Long Ball Pass","Aerial Fortress+","Aerial Fortress","First Touch+","First Touch","Rapid+","Rapid","Whipped Pass+","Technical+","Inventive+","Whipped Pass","Technical","Inventive","Finesse Shot+","Low Driven+","Finesse Shot","Low Driven","Enforcer+","Enforcer","Game Changer+","Game Changer","Long Throw+","Long Throw","Power Shot+","Precision Header+","Precision Header","Acrobatic+","Acrobatic","Chip Shot+","Chip Shot","Trickster+","Trickster","Power Shot","Dead Ball+","Dead Ball"],
+  centreback: ["Intercept+","Jockey+","Bruiser+","Anticipate+","Intercept","Jockey","Anticipate","Bruiser","Quick Step+","Quick Step","Block+","Block","Pinged Pass+","Slide Tackle+","Tiki Taka+","Slide Tackle","Pinged Pass","Aerial Fortress+","Tiki Taka","Aerial Fortress","Long Ball Pass+","Long Ball Pass","Relentless+","Relentless","Incisive Pass+","Press Proven+","Incisive Pass","First Touch+","Press Proven","First Touch","Precision Header+","Acrobatic+","Precision Header","Acrobatic","Enforcer+","Enforcer","Rapid+","Rapid","Inventive+","Inventive","Technical+","Technical","Finesse Shot+","Low Driven+","Finesse Shot","Low Driven","Game Changer+","Game Changer","Long Throw+","Long Throw","Power Shot+","Whipped Pass+","Whipped Pass","Chip Shot+","Chip Shot","Trickster+","Trickster","Power Shot","Dead Ball+","Dead Ball"],
+  goalkeeper: ["Far Reach+","Far Reach","Footwork+","Rush Out+","Footwork","Rush Out","Deflector+","Deflector","Cross Claimer+","Cross Claimer","Far Throw+","Pinged Pass+","Far Throw","Tiki Taka+","Long Ball Pass+","Pinged Pass","Tiki Taka","Long Ball Pass","First Touch+","Press Proven+","Incisive Pass+","Incisive Pass","First Touch","Press Proven","Inventive+","Inventive","Quick Step+","Quick Step","Relentless+","Relentless","Enforcer+","Aerial Fortress+","Aerial Fortress","Enforcer","Slide Tackle+","Slide Tackle","Block+","Block","Jockey+","Jockey","Intercept+","Intercept","Anticipate+","Anticipate","Technical+","Technical","Trickster+","Trickster","Rapid+","Rapid"],
+};
+
+function parse(id){const p=id.endsWith('+');const n=p?id.slice(0,-1):id;const d=PSD[n];return{id,name:n,plus:p,img:d?d.img:'0.2',cat:d?d.cat:'SCORING'}}
+function pid(n,plus){return n+(plus?'+':'')}
+
 let state={activeTab:0,submitted:{},nameLocked:false},archState={};
-POSITIONS.forEach(p=>{state.submitted[p.id]=false;archState[p.id]={ranked:[],binned:[],placedSet:new Set(),binnedSet:new Set(),catIdx:0,phaseIdx:0}});
 let gc=0,dragPayload=null,isDragging=false;
+let animatedTabs = new Set(); // Track which tabs have been animated
+
+// GK bins — PlayStyles with no benefit for Goalkeeper
+const BASELINES_BINNED = {
+  goalkeeper: ["Finesse Shot+","Finesse Shot","Chip Shot+","Chip Shot","Power Shot+","Power Shot","Dead Ball+","Dead Ball","Acrobatic+","Acrobatic","Low Driven+","Low Driven","Game Changer+","Game Changer","Precision Header+","Precision Header","Whipped Pass+","Whipped Pass","Bruiser+","Bruiser","Long Throw+","Long Throw"],
+};
+
+// Init archState from baselines
+POSITIONS.forEach(p=>{
+  state.submitted[p.id]=false;
+  const baseline = BASELINES[p.id] || [];
+  const ranked = baseline.map(id => parse(id)).filter(item => PSD[item.name]);
+  const binnedIds = (BASELINES_BINNED[p.id] || []);
+  const binned = binnedIds.map(id => parse(id)).filter(item => PSD[item.name]);
+  archState[p.id] = {
+    ranked: ranked,
+    binned: binned,
+    placedSet: new Set(ranked.map(r=>r.id)),
+    binnedSet: new Set(binned.map(b=>b.id)),
+    baselineOrder: [...baseline]
+  };
+});
+
+function catColor(cat) {
+  const map = { SCORING:'#e74c3c', PASSING:'#3498db', DEFENDING:'#2ecc71', 'BALL CONTROL':'#9b59b6', PHYSICAL:'#9ca3af', GOALKEEPING:'#f472b6' };
+  return map[cat] || '#888';
+}
 
 function svgS(plus,sz){if(plus){const g=`g${gc++}`;return`<svg width="${sz}" height="${sz}" viewBox="0 0 256 256"><defs><linearGradient id="${g}" x1="0" y1="0" x2=".7" y2="1"><stop offset="0%" stop-color="#efc53f"/><stop offset="100%" stop-color="#f2e2b5"/></linearGradient></defs><path d="M12.813,104.953L68.157,21.862H188.143l55.045,83.091L128,235.138Z" fill="url(#${g})"/></svg>`}return`<svg width="${sz}" height="${sz}" viewBox="0 0 256 256"><path d="M128,12.808L243.192,128,128,243.192,12.808,128Z" fill="#FFF"/></svg>`}
 function ic(item,sz){const t=item.plus?'translate(-50%,-55%)':'translate(-50%,-50%)';return`<div style="position:relative;width:${sz}px;height:${sz}px;flex-shrink:0">${svgS(item.plus,sz)}<img src="${IMG}/${item.img}.png" style="max-width:85%;position:absolute;top:50%;left:50%;transform:${t};pointer-events:none"></div>`}
-function parse(id){const p=id.endsWith('+');const n=p?id.slice(0,-1):id;return{id,name:n,plus:p,img:PSD[n].img}}
-function pid(n,plus){return n+(plus?'+':'')}
 
-// Warnings: baseAbovePlus ALWAYS. Unpaired/bin-split only in PS+ phase or forSubmit.
+// Warnings
 function getWarnings(posId,forSubmit){
   const a=archState[posId],bSet=new Set(a.binned.map(b=>b.id)),rPos={};
   a.ranked.forEach((r,i)=>rPos[r.id]=i);
-  const showPairs=forSubmit||a.phaseIdx===1;
   const w={rank:new Set(),bin:new Set(),baseAbovePlus:0,unpaired:[]};
   a.ranked.forEach((item,idx)=>{
     if(!item.plus){const p2=item.name+'+';if(p2 in rPos&&rPos[p2]>idx){w.rank.add(item.id);w.rank.add(p2);w.baseAbovePlus++}}
   });
-  if(showPairs){
-    a.ranked.forEach(item=>{const partner=item.plus?item.name:item.name+'+';if(bSet.has(partner)){w.rank.add(item.id);w.bin.add(partner)}});
-    a.binned.forEach(item=>{const partner=item.plus?item.name:item.name+'+';if(rPos[partner]!==undefined){w.bin.add(item.id);w.rank.add(partner)}});
-    const checked=new Set(),rids=new Set(a.ranked.map(r=>r.id));
-    a.ranked.forEach(item=>{if(!checked.has(item.name)){checked.add(item.name);const hB=rids.has(pid(item.name,false)),hP=rids.has(pid(item.name,true)),bB=bSet.has(pid(item.name,false)),bP=bSet.has(pid(item.name,true));if(hB&&!hP&&!bP)w.unpaired.push(item.name+'+');if(hP&&!hB&&!bB)w.unpaired.push(item.name)}});
-  }
+  // Pair checks (split between rank/bin, or unpaired)
+  a.ranked.forEach(item=>{const partner=item.plus?item.name:item.name+'+';if(bSet.has(partner)){w.rank.add(item.id);w.bin.add(partner)}});
+  a.binned.forEach(item=>{const partner=item.plus?item.name:item.name+'+';if(rPos[partner]!==undefined){w.bin.add(item.id);w.rank.add(partner)}});
+  const checked=new Set(),rids=new Set(a.ranked.map(r=>r.id));
+  a.ranked.forEach(item=>{if(!checked.has(item.name)){checked.add(item.name);const hB=rids.has(pid(item.name,false)),hP=rids.has(pid(item.name,true)),bB=bSet.has(pid(item.name,false)),bP=bSet.has(pid(item.name,true));if(hB&&!hP&&!bP)w.unpaired.push(item.name+'+');if(hP&&!hB&&!bB)w.unpaired.push(item.name)}});
   return w;
 }
 
-function feedItems(posId){const a=archState[posId],cats=catsFor(POSITIONS.find(p=>p.id===posId)),cat=cats[a.catIdx];if(!cat)return[];return cat.ps.map(name=>{const id=name+(PHASES[a.phaseIdx].plus?'+':'');return{...parse(id),done:a.placedSet.has(id)||a.binnedSet.has(id)}})}
-function totalPS(posId){return catsFor(POSITIONS.find(p=>p.id===posId)).reduce((s,c)=>s+c.ps.length*2,0)}
-function allCatsDone(posId){const a=archState[posId],cats=catsFor(POSITIONS.find(p=>p.id===posId));for(const c of cats)for(const ph of PHASES)for(const n of c.ps){const id=n+(ph.plus?'+':'');if(!a.placedSet.has(id)&&!a.binnedSet.has(id))return false}return true}
-function curCatDone(posId){return feedItems(posId).every(f=>f.done)}
+function countChanges(posId) {
+  const a = archState[posId];
+  const current = a.ranked.map(r => r.id);
+  const baseline = a.baselineOrder;
+  // Count positions that differ
+  let changes = 0;
+  const maxLen = Math.max(current.length, baseline.length);
+  for (let i = 0; i < maxLen; i++) {
+    if (current[i] !== baseline[i]) changes++;
+  }
+  // Also count binned items as changes
+  changes += a.binned.length;
+  return changes;
+}
 
-function saveState(){try{const data={name:document.getElementById('respondentName')?.value||'',activeTab:state.activeTab,submitted:state.submitted,nameLocked:state.nameLocked,arch:{}};POSITIONS.forEach(p=>{const a=archState[p.id];data.arch[p.id]={ranked:a.ranked.map(r=>r.id),binned:a.binned.map(b=>b.id),catIdx:a.catIdx,phaseIdx:a.phaseIdx}});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));showSave('Progress saved')}catch(e){console.warn('Save failed',e)}}
-function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;const data=JSON.parse(raw);if(data.name)document.getElementById('respondentName').value=data.name;state.activeTab=data.activeTab||0;state.submitted=data.submitted||{};state.nameLocked=data.nameLocked||false;if(state.nameLocked){const ni=document.getElementById('respondentName');ni.disabled=true;ni.style.opacity='0.5'}POSITIONS.forEach(p=>{if(!(p.id in state.submitted))state.submitted[p.id]=false;const saved=data.arch?.[p.id];if(saved){const a=archState[p.id];a.catIdx=saved.catIdx||0;a.phaseIdx=saved.phaseIdx||0;a.ranked=(saved.ranked||[]).map(id=>PSD[id.endsWith('+')?id.slice(0,-1):id]?parse(id):null).filter(Boolean);a.binned=(saved.binned||[]).map(id=>PSD[id.endsWith('+')?id.slice(0,-1):id]?parse(id):null).filter(Boolean);a.placedSet=new Set(a.ranked.map(r=>r.id));a.binnedSet=new Set(a.binned.map(b=>b.id))}});return true}catch(e){console.warn('Load failed',e);return false}}
+function saveState(){try{const data={name:document.getElementById('respondentName')?.value||'',activeTab:state.activeTab,submitted:state.submitted,nameLocked:state.nameLocked,arch:{}};POSITIONS.forEach(p=>{const a=archState[p.id];data.arch[p.id]={ranked:a.ranked.map(r=>r.id),binned:a.binned.map(b=>b.id)}});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));showSave('Progress saved')}catch(e){console.warn('Save failed',e)}}
+function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;const data=JSON.parse(raw);if(data.name)document.getElementById('respondentName').value=data.name;state.activeTab=data.activeTab||0;state.submitted=data.submitted||{};state.nameLocked=data.nameLocked||false;if(state.nameLocked){const ni=document.getElementById('respondentName');ni.disabled=true;ni.style.opacity='0.5'}POSITIONS.forEach(p=>{if(!(p.id in state.submitted))state.submitted[p.id]=false;const saved=data.arch?.[p.id];if(saved){const a=archState[p.id];a.ranked=(saved.ranked||[]).map(id=>PSD[id.endsWith('+')?id.slice(0,-1):id]?parse(id):null).filter(Boolean);a.binned=(saved.binned||[]).map(id=>PSD[id.endsWith('+')?id.slice(0,-1):id]?parse(id):null).filter(Boolean);a.placedSet=new Set(a.ranked.map(r=>r.id));a.binnedSet=new Set(a.binned.map(b=>b.id))}});animatedTabs=new Set(Array.from({length:POSITIONS.length},(_,i)=>i)); // Don't animate loaded tabs
+return true}catch(e){console.warn('Load failed',e);return false}}
 function showSave(msg){const el=document.getElementById('saveStatus');el.textContent=msg;clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent=''},2000)}
 
-function buildCumulativeCSV(){const name=document.getElementById('respondentName').value.trim();let rows=['Respondent,Archetype,Rank,PlayStyle,Category,IsPlus'];POSITIONS.forEach(pos=>{if(state.submitted[pos.id]){archState[pos.id].ranked.forEach((item,idx)=>{const cat=ALL_CATS.find(c=>c.ps.includes(item.name));rows.push(`${name},${pos.name},${idx+1},${item.id.replace(/,/g,'')},${cat?cat.name:''},${item.plus?'TRUE':'FALSE'}`)})}});return rows.join('\n')}
+function buildCumulativeCSV(){const name=document.getElementById('respondentName').value.trim();let rows=['Respondent,Archetype,Rank,PlayStyle,Category,IsPlus'];POSITIONS.forEach(pos=>{if(state.submitted[pos.id]){archState[pos.id].ranked.forEach((item,idx)=>{rows.push(`${name},${pos.name},${idx+1},${item.id.replace(/,/g,'')},${item.cat},${item.plus?'TRUE':'FALSE'}`)})}});return rows.join('\n')}
 
 function renderProgress(){const t=POSITIONS.length,d=POSITIONS.filter(p=>state.submitted[p.id]).length,pct=Math.round((d/t)*100);document.getElementById('progressLabel').textContent=`${d} / ${t} archetypes submitted`;document.getElementById('progressPct').textContent=`${pct}%`;document.getElementById('progressFill').style.width=`${pct}%`}
-function renderTabs(){document.getElementById('tabs').innerHTML=POSITIONS.map((p,i)=>{const active=i===state.activeTab,bg=active?p.accent:'rgba(255,255,255,0.06)',tc=active?'#fff':'rgba(255,255,255,0.3)';let dot='transparent';if(state.submitted[p.id])dot='#2ecc71';else if(archState[p.id].ranked.length>0||archState[p.id].binned.length>0)dot='#d4af37';return`<div class="tab ${active?'active':''}" onclick="switchTab(${i})"><span class="tab-badge" style="background:${bg};color:${tc}">${p.label}</span><span class="tab-label">${p.name}</span><span class="tab-status-dot" style="background:${dot}"></span></div>`}).join('')}
+function renderTabs(){document.getElementById('tabs').innerHTML=POSITIONS.map((p,i)=>{const active=i===state.activeTab;let bg='rgba(255,255,255,0.06)',tc='rgba(255,255,255,0.3)';const hasChanges=archState[p.id].ranked.some((r,idx)=>r.id!==archState[p.id].baselineOrder[idx])||archState[p.id].binned.length>0;let dot='transparent';if(state.submitted[p.id]){dot='#2ecc71';bg='rgba(46,204,113,0.25)';tc='#2ecc71'}else if(hasChanges){dot='#d4af37';bg='rgba(212,175,55,0.25)';tc='#d4af37'}if(active){bg=state.submitted[p.id]?'rgba(46,204,113,0.35)':hasChanges?'rgba(212,175,55,0.35)':'#6b7280';tc='#fff'};return`<div class="tab ${active?'active':''}" onclick="switchTab(${i})"><span class="tab-badge" style="background:${bg};color:${tc}">${p.label}</span><span class="tab-label">${p.name}</span><span class="tab-dot" style="background:${dot}"></span></div>`}).join('')}
 
 function renderPanels(){
   gc=0;
+  const shouldAnimate = !animatedTabs.has(state.activeTab);
+  if (shouldAnimate) animatedTabs.add(state.activeTab);
+
   document.getElementById('panels').innerHTML=POSITIONS.map((pos,i)=>{
     if(i!==state.activeTab)return'<div class="panel"></div>';
-    const a=archState[pos.id],warns=getWarnings(pos.id,false);
+    const a=archState[pos.id],warns=getWarnings(pos.id,false),changes=countChanges(pos.id);
     // Copy ranking
-    const others=POSITIONS.filter(p=>p.id!==pos.id&&archState[p.id].ranked.length>0);
+    const others=POSITIONS.filter(p=>p.id!==pos.id&&(archState[p.id].ranked.length>0||state.submitted[p.id]));
     let copyHTML='';
     if(!state.submitted[pos.id]&&others.length>0){const opts=others.map(p=>`<option value="${p.id}">${p.name} (${archState[p.id].ranked.length})</option>`).join('');copyHTML=`<div class="copy-ranking-box"><span class="copy-label">⚡ Copy from</span><select onchange="copyRanking('${pos.id}',this.value);this.selectedIndex=0"><option value="">Select...</option>${opts}</select></div>`}
     const topBar=`<div class="top-bar"><div class="archetype-desc">${pos.roles.map(r=>`<span class="archetype-role">${r}</span>`).join('')}</div>${copyHTML}</div>`;
-    const done=a.placedSet.size+a.binnedSet.size,tot=totalPS(pos.id),apct=tot>0?Math.round(done/tot*100):0;
-    const progHTML=`<div class="arch-prog"><div class="arch-prog-info"><span class="ap-left">${a.ranked.length} ranked · ${a.binned.length} binned · ${tot-done} remaining</span><span class="ap-pct">${apct}%</span></div><div class="arch-prog-track"><div class="arch-prog-fill" style="width:${apct}%"></div></div></div>`;
-    const catBarHTML=renderCatBarHTML(pos.id);
-    const rankHTML=renderRankHTML(pos.id,warns);
+
+    // Category legend
+    const catNames = pos.isGK ? ["GOALKEEPING","SCORING","PASSING","DEFENDING","BALL CONTROL","PHYSICAL"] : ["SCORING","PASSING","DEFENDING","BALL CONTROL","PHYSICAL"];
+    const legendHTML = `<div class="cat-legend"><span class="cat-legend-title">Categories</span>${catNames.map(c=>`<div class="cat-legend-item"><div class="cat-legend-dot" style="background:${catColor(c)}"></div>${c}</div>`).join('')}</div>`;
+
+    const rankHTML=renderRankHTML(pos.id,warns,shouldAnimate);
     const binHTML=renderBinHTML(pos.id,warns);
     const subHTML=renderSubmitHTML(pos.id,warns);
-    return`<div class="panel active">${topBar}${progHTML}${catBarHTML}<div class="rank-lbl"><span>Ranking — ${a.ranked.length}</span>${a.ranked.length>0?`<button class="btn-clear" onclick="clr('${pos.id}')">Clear all</button>`:''}</div><div class="rank-area" id="ra_${pos.id}">${rankHTML}</div><div class="bin-section"><div class="bin-lbl"><span>No Benefit</span><span>${a.binned.length}</span></div><div class="bin-strip" id="bs_${pos.id}">${binHTML}</div></div><div class="submit-area">${subHTML}</div><div class="submit-feedback" id="sf_${pos.id}"></div></div>`;
+    const changesHTML = changes > 0 ? `<span class="changes-badge">${changes} change${changes!==1?'s':''}</span>` : '';
+    return`<div class="panel active">${topBar}${legendHTML}<div class="rank-lbl"><span>Ranking — ${a.ranked.length} ${changesHTML}</span><div class="rank-btns">${!state.submitted[pos.id]?`<button class="btn-reset-baseline" onclick="resetBaseline('${pos.id}')">↺ Reset baseline</button>`:''}${a.ranked.length>0&&!state.submitted[pos.id]?`<button class="btn-clear" onclick="clr('${pos.id}')">Clear all</button>`:''}</div></div><div class="rank-area" id="ra_${pos.id}">${rankHTML}</div><div class="bin-section"><div class="bin-lbl"><span>No Benefit</span><span>${a.binned.length}</span></div><div class="bin-strip" id="bs_${pos.id}">${binHTML}</div></div><div class="submit-area">${subHTML}</div><div class="submit-feedback" id="sf_${pos.id}"></div></div>`;
   }).join('');
   POSITIONS.forEach((pos,i)=>{if(i!==state.activeTab)return;const bs=document.getElementById(`bs_${pos.id}`);if(!bs)return;bs.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';bs.classList.add('drag-over')});bs.addEventListener('dragleave',()=>bs.classList.remove('drag-over'));bs.addEventListener('drop',e=>{e.preventDefault();bs.classList.remove('drag-over');handleBinDrop(pos.id)})});
-  bindFeedDrag();bindRankDrag();bindBinDrag();bindPairHighlight();
+  bindRankDrag();bindBinDrag();bindPairHighlight();
   const allDone=Object.values(state.submitted).every(Boolean);const banner=document.getElementById('completionBanner');if(allDone){banner.classList.add('show');document.getElementById('completionText').textContent=`Thank you, ${document.getElementById('respondentName').value.trim()}! All rankings have been sent.`}else banner.classList.remove('show');
 }
 
-function renderCatBarHTML(posId){if(state.submitted[posId])return'';const a=archState[posId],cats=catsFor(POSITIONS.find(p=>p.id===posId)),cat=cats[a.catIdx];if(!cat)return'';const ph=PHASES[a.phaseIdx],items=feedItems(posId),remaining=items.filter(f=>!f.done).length,cd=curCatDone(posId);let content='';if(cd){const hasNext=!allCatsDone(posId);content=`<div class="cat-done-msg"><span>✓ All ${cat.name.toLowerCase()} ${ph.label.toLowerCase()} placed</span>${hasNext?`<button class="btn-next-cat" onclick="advanceCat('${posId}')">Next category ▶</button>`:''}</div>`}else{content=`<div class="cat-items">${items.map(item=>{const eid=item.id.replace(/'/g,"\\'");return`<div class="fi${item.done?' done':''}" draggable="${!item.done}" data-fid="${item.id}" data-psid="${item.id}" data-posid="${posId}">${ic(item,34)}<button class="fi-x" onclick="event.stopPropagation();binPS('${posId}','${eid}')">✕</button><div class="fi-tip">${item.id}</div></div>`}).join('')}</div>`}return`<div class="cat-bar"><div class="cat-top"><span class="cat-name" style="color:${cat.color}">${cat.name}</span><span class="cat-phase">${ph.label}</span><span class="cat-count">${remaining} remaining</span>${!cd&&remaining>0?`<button class="btn-add-all" onclick="addAllCat('${posId}')">Add all</button>`:''}</div>${content}</div>`}
+function renderRankHTML(posId,warns,animate){
+  const a=archState[posId],n=a.ranked.length,locked=state.submitted[posId];
+  if(n===0)return`<div class="empty-state" id="ez_${posId}"><div class="es-main">All PlayStyles cleared</div><button class="btn-add-all-big" onclick="resetBaseline('${posId}')">↺ Reset to baseline</button></div>`;
+  let h='';
+  for(let i=0;i<n;i++){
+    const item=a.ranked[i],isW=warns.rank.has(item.id),cls=(item._jp?' just-placed':'')+(isW?' warn':'');
+    const t=n>1?i/(n-1):0;
+    const bgA=Math.round((1-t*0.85)*100)/100;
+    const txtA=Math.round((1-t*0.6)*100)/100;
+    const cr=Math.round(232+(245-232)*t),cg=Math.round(68+(158-68)*t),cb=Math.round(46+(11-46)*t);
+    const numStyle=`background:rgba(${cr},${cg},${cb},${bgA*0.45});color:rgba(255,255,255,${txtA});${i<1?'text-shadow:0 1px 2px rgba(0,0,0,0.3);font-size:10px':''}`;
+    const animDelay = animate ? `style="animation-delay:${i*15}ms"` : '';
+    const animCls = animate ? ' anim' : '';
+    const dzLeft = !locked ? `<div class="dz-left" data-drop-pos="${i}" data-posid="${posId}"></div>` : '';
+    const dzRight = !locked ? `<div class="dz-right" data-drop-pos="${i+1}" data-posid="${posId}"></div>` : '';
+    h+=`<div class="slot${animCls}" data-idx="${i}" data-posid="${posId}" ${animDelay}>${dzLeft}${dzRight}<div class="slot-num" style="${numStyle}">${i+1}</div><div class="tile${cls}" data-idx="${i}" data-posid="${posId}" data-psid="${item.id}" data-cat="${item.cat}" draggable="${!locked}">${ic(item,42)}<div class="tile-tip">${item.id}</div></div></div>`;
+  }
+  if(!locked)h+=`<div class="dz-end" data-drop-pos="${n}" data-posid="${posId}"><div class="dz-ghost"></div></div>`;
+  a.ranked.forEach(i=>{i._jp=false});
+  return h;
+}
 
-function renderRankHTML(posId,warns){const a=archState[posId],n=a.ranked.length,locked=state.submitted[posId];if(n===0)return`<div class="empty-state" id="ez_${posId}"><div class="es-main">Drag PlayStyles here to rank them</div><button class="btn-add-all-big" onclick="addAllCat('${posId}')">Add all ${catsFor(POSITIONS.find(p=>p.id===posId))[a.catIdx]?.name||''}</button><div class="es-sub">These can be moved to "No Benefit" after</div></div>`;let h='';for(let i=0;i<n;i++){const item=a.ranked[i],isW=warns.rank.has(item.id),cls=(item._jp?' just-placed':'')+(isW?' warn':'');const t=n>1?i/(n-1):0;const bgA=Math.round((1-t*0.85)*100)/100;const txtA=Math.round((1-t*0.6)*100)/100;const numStyle=`background:rgba(232,68,46,${bgA*0.45});color:rgba(255,255,255,${txtA});${i<1?'text-shadow:0 1px 2px rgba(0,0,0,0.3);font-size:10px':''}`;if(!locked)h+=`<div class="dz" data-pos="${i}" data-posid="${posId}"><div class="dz-ghost"></div></div>`;h+=`<div class="slot" data-idx="${i}" data-posid="${posId}"><div class="slot-num" style="${numStyle}">${i+1}</div><div class="tile${cls}" data-idx="${i}" data-posid="${posId}" data-psid="${item.id}" draggable="${!locked}">${ic(item,34)}<div class="tile-tip">${item.id}</div></div></div>`}if(!locked)h+=`<div class="dz" data-pos="${n}" data-posid="${posId}"><div class="dz-ghost"></div></div>`;a.ranked.forEach(i=>{i._jp=false});return h}
-
-function renderBinHTML(posId,warns){const a=archState[posId],locked=state.submitted[posId];if(a.binned.length===0)return`<div class="bin-empty">Drag here for PlayStyles with no benefit</div>`;return a.binned.map((item,i)=>`<div class="bin-tile${warns.bin.has(item.id)?' warn':''}" draggable="${!locked}" data-bidx="${i}" data-posid="${posId}" data-psid="${item.id}">${ic(item,24)}<div class="bt-tip">${item.id}${locked?'':' — drag back to ranking'}</div></div>`).join('')}
+function renderBinHTML(posId,warns){const a=archState[posId],locked=state.submitted[posId];if(a.binned.length===0)return`<div class="bin-empty">Drag here for PlayStyles with no benefit</div>`;return a.binned.map((item,i)=>`<div class="bin-tile${warns.bin.has(item.id)?' warn':''}" draggable="${!locked}" data-bidx="${i}" data-posid="${posId}" data-psid="${item.id}">${ic(item,30)}<div class="bt-tip">${item.id}${locked?'':' — drag back to ranking'}</div></div>`).join('')}
 
 function renderSubmitHTML(posId,warns){const a=archState[posId],pos=POSITIONS.find(p=>p.id===posId),name=document.getElementById('respondentName')?.value?.trim()||'',count=a.ranked.length,meetsMin=count>=MIN_PS,hasIssues=warns.baseAbovePlus>0||warns.unpaired.length>0,canSubmit=meetsMin&&name.length>0&&!hasIssues;if(state.submitted[posId])return`<div class="submitted-banner">✓ Submitted — ${pos.name} <button onclick="unlockArchetype('${posId}')" style="margin-left:12px;background:none;border:1px solid rgba(46,204,113,0.3);border-radius:4px;padding:3px 10px;font-size:11px;color:rgba(46,204,113,0.6);cursor:pointer;font-family:'JetBrains Mono',monospace">🔓 Unlock to edit</button></div>`;let lbl;if(!name)lbl='Enter your name to submit';else if(warns.baseAbovePlus>0&&warns.unpaired.length>0)lbl='Fix warnings — ordering & missing pairs';else if(warns.baseAbovePlus>0)lbl=`Fix ${warns.baseAbovePlus} warning${warns.baseAbovePlus>1?'s':''} — base PS ranked above PS+`;else if(warns.unpaired.length>0)lbl=`Missing pairs — add both base & + (${warns.unpaired.length} unpaired)`;else if(!meetsMin)lbl=`Need ${MIN_PS-count} more (${count}/${MIN_PS} minimum)`;else lbl=`Submit ${pos.name} (${count} PlayStyles)`;let explainerHTML='';if(warns.baseAbovePlus>0||warns.unpaired.length>0){let items=[];if(warns.baseAbovePlus>0)items.push(`<strong>⚠ Ordering:</strong> A base PlayStyle is ranked higher than its + version. Drag the + above the base.`);if(warns.unpaired.length>0){const missing=warns.unpaired.map(u=>`<li>Missing <strong>${u}</strong> — add it to ranking or bin</li>`).join('');items.push(`<strong>⊘ Missing pairs:</strong> Each PlayStyle needs both its base and + version placed.<ul class="fix-list">${missing}</ul>`)};explainerHTML=`<div class="submit-explainer">${items.join('<br>')}</div>`}return`<button class="btn-submit" id="sb_${posId}" ${!canSubmit?'disabled':''} style="${canSubmit?`background:linear-gradient(135deg,${pos.accent},${pos.accent}cc)`:''}" onclick="submitArchetype('${posId}')">${lbl}</button>${explainerHTML}`}
 
 function render(){renderProgress();renderTabs();renderPanels()}
 
-function bindFeedDrag(){document.querySelectorAll('.fi:not(.done)').forEach(el=>{el.addEventListener('dragstart',e=>{dragPayload={type:'feed',id:el.dataset.fid,posId:el.dataset.posid};isDragging=true;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',el.dataset.fid);requestAnimationFrame(()=>{el.classList.add('dragging-src');showDZ(el.dataset.posid)})});el.addEventListener('dragend',()=>{el.classList.remove('dragging-src');endDrag()})})}
-function bindRankDrag(){const posId=POSITIONS[state.activeTab]?.id;if(!posId)return;const area=document.getElementById(`ra_${posId}`);if(!area)return;const ez=document.getElementById(`ez_${posId}`);if(ez){ez.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';ez.classList.add('drag-over')});ez.addEventListener('dragleave',()=>ez.classList.remove('drag-over'));ez.addEventListener('drop',e=>{e.preventDefault();ez.classList.remove('drag-over');handleDrop(posId,0)})}area.querySelectorAll('.tile[draggable="true"]').forEach(tile=>{tile.addEventListener('dragstart',e=>{const idx=parseInt(tile.dataset.idx);dragPayload={type:'reorder',id:archState[posId].ranked[idx].id,fromIdx:idx,posId};isDragging=true;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','reorder');requestAnimationFrame(()=>{tile.classList.add('dragging');showDZ(posId)})});tile.addEventListener('dragend',()=>{tile.classList.remove('dragging');endDrag()})});area.querySelectorAll('.slot').forEach(slot=>{slot.addEventListener('dragover',e=>{if(!isDragging)return;e.preventDefault();e.dataTransfer.dropEffect='move';const rect=slot.getBoundingClientRect(),relX=(e.clientX-rect.left)/rect.width,idx=parseInt(slot.dataset.idx);clearHot(posId);if(relX<0.3)activateDZ(posId,idx);else if(relX>0.7)activateDZ(posId,idx+1)});slot.addEventListener('drop',e=>{e.preventDefault();const rect=slot.getBoundingClientRect(),relX=(e.clientX-rect.left)/rect.width,idx=parseInt(slot.dataset.idx);if(relX<0.3)handleDrop(posId,idx);else if(relX>0.7)handleDrop(posId,idx+1)})});area.querySelectorAll('.dz').forEach(dz=>{dz.addEventListener('dragover',e=>{if(!isDragging)return;e.preventDefault();e.dataTransfer.dropEffect='move';clearHot(posId);activateDZ(posId,parseInt(dz.dataset.pos))});dz.addEventListener('drop',e=>{e.preventDefault();handleDrop(posId,parseInt(dz.dataset.pos))})})}
+function bindRankDrag(){const posId=POSITIONS[state.activeTab]?.id;if(!posId)return;const area=document.getElementById(`ra_${posId}`);if(!area)return;const ez=document.getElementById(`ez_${posId}`);if(ez){ez.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';ez.classList.add('drag-over')});ez.addEventListener('dragleave',()=>ez.classList.remove('drag-over'));ez.addEventListener('drop',e=>{e.preventDefault();ez.classList.remove('drag-over');handleDrop(posId,0)})}
+// Tile drag start
+area.querySelectorAll('.tile[draggable="true"]').forEach(tile=>{tile.addEventListener('dragstart',e=>{const idx=parseInt(tile.dataset.idx);dragPayload={type:'reorder',id:archState[posId].ranked[idx].id,fromIdx:idx,posId};isDragging=true;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','reorder');requestAnimationFrame(()=>{tile.classList.add('dragging');area.classList.add('dragging-active')})});tile.addEventListener('dragend',()=>{tile.classList.remove('dragging');endDrag()})});
+// Drop zone overlays on left/right of tiles
+area.querySelectorAll('.dz-left, .dz-right').forEach(dz=>{dz.addEventListener('dragover',e=>{if(!isDragging)return;e.preventDefault();e.dataTransfer.dropEffect='move';clearHot(posId);dz.classList.add('hot')});dz.addEventListener('dragleave',()=>{dz.classList.remove('hot')});dz.addEventListener('drop',e=>{e.preventDefault();handleDrop(posId,parseInt(dz.dataset.dropPos))})});
+// End drop zone
+const dzEnd=area.querySelector('.dz-end');if(dzEnd){dzEnd.addEventListener('dragover',e=>{if(!isDragging)return;e.preventDefault();e.dataTransfer.dropEffect='move';clearHot(posId);dzEnd.classList.add('hot');const ghost=dzEnd.querySelector('.dz-ghost');if(ghost&&dragPayload){let item=null;if(dragPayload.type==='reorder'&&dragPayload.fromIdx!==undefined)item=archState[posId].ranked[dragPayload.fromIdx];else if(dragPayload.type==='restore')item=parse(dragPayload.id);if(item)ghost.innerHTML=ic(item,42)}});dzEnd.addEventListener('dragleave',()=>{dzEnd.classList.remove('hot');const g=dzEnd.querySelector('.dz-ghost');if(g)g.innerHTML=''});dzEnd.addEventListener('drop',e=>{e.preventDefault();handleDrop(posId,archState[posId].ranked.length)})}}
 function bindBinDrag(){const posId=POSITIONS[state.activeTab]?.id;if(!posId)return;document.querySelectorAll(`.bin-tile[data-posid="${posId}"]`).forEach(bt=>{bt.addEventListener('dragstart',e=>{const idx=parseInt(bt.dataset.bidx),item=archState[posId].binned[idx];dragPayload={type:'restore',id:item.id,binIdx:idx,posId};isDragging=true;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',item.id);requestAnimationFrame(()=>showDZ(posId))});bt.addEventListener('dragend',()=>endDrag())})}
 
-function showDZ(posId){document.querySelectorAll(`#ra_${posId} .dz`).forEach(d=>d.classList.add('vis'))}
-function hideDZ(posId){document.querySelectorAll(`#ra_${posId} .dz`).forEach(d=>{d.classList.remove('vis','hot');const g=d.querySelector('.dz-ghost');if(g)g.innerHTML=''})}
-function activateDZ(posId,pos){clearHot(posId);const dz=document.querySelector(`#ra_${posId} .dz[data-pos="${pos}"]`);if(!dz)return;dz.classList.add('hot');const ghost=dz.querySelector('.dz-ghost');if(ghost&&dragPayload){let item=null;if(dragPayload.type==='feed')item=parse(dragPayload.id);else if(dragPayload.type==='reorder'&&dragPayload.fromIdx!==undefined)item=archState[posId].ranked[dragPayload.fromIdx];else if(dragPayload.type==='restore')item=parse(dragPayload.id);if(item)ghost.innerHTML=ic(item,34)}}
-function clearHot(posId){document.querySelectorAll(`#ra_${posId} .dz.hot`).forEach(d=>{d.classList.remove('hot');const g=d.querySelector('.dz-ghost');if(g)g.innerHTML=''})}
+function showDZ(posId){const area=document.getElementById(`ra_${posId}`);if(area)area.classList.add('dragging-active')}
+function hideDZ(posId){const area=document.getElementById(`ra_${posId}`);if(area)area.classList.remove('dragging-active')}
+function clearHot(posId){const area=document.getElementById(`ra_${posId}`);if(!area)return;area.querySelectorAll('.dz-left.hot, .dz-right.hot').forEach(d=>d.classList.remove('hot'));const dzEnd=area.querySelector('.dz-end.hot');if(dzEnd){dzEnd.classList.remove('hot');const g=dzEnd.querySelector('.dz-ghost');if(g)g.innerHTML=''}}
 function endDrag(){const posId=POSITIONS[state.activeTab]?.id;isDragging=false;dragPayload=null;if(posId){hideDZ(posId);clearHot(posId)}}
 
 function bindPairHighlight(){const els=document.querySelectorAll('[data-psid]');function partnerOf(id){return id.endsWith('+')?id.slice(0,-1):id+'+'}els.forEach(el=>{el.addEventListener('mouseenter',()=>{if(isDragging)return;const pid=partnerOf(el.dataset.psid);document.querySelectorAll(`[data-psid="${CSS.escape(pid)}"]`).forEach(p=>p.classList.add('pair-hl'))});el.addEventListener('mouseleave',()=>{document.querySelectorAll('.pair-hl').forEach(p=>p.classList.remove('pair-hl'))})})}
 
-function handleDrop(posId,pos){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='feed'){const id=dragPayload.id;if(a.placedSet.has(id)||a.binnedSet.has(id)){endDrag();render();return}a.ranked.splice(pos,0,{...parse(id),_jp:true});a.placedSet.add(id)}else if(dragPayload.type==='reorder'){const from=dragPayload.fromIdx;if(pos===from||pos===from+1){endDrag();render();return}const[item]=a.ranked.splice(from,1);let to=pos;if(to>from)to--;a.ranked.splice(to,0,item)}else if(dragPayload.type==='restore'){const item=a.binned.splice(dragPayload.binIdx,1)[0];a.binnedSet.delete(item.id);a.ranked.splice(pos,0,{...parse(item.id),_jp:true});a.placedSet.add(item.id)}endDrag();render();saveState()}
-function handleBinDrop(posId){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='feed')binPS(posId,dragPayload.id);else if(dragPayload.type==='reorder'){const[item]=a.ranked.splice(dragPayload.fromIdx,1);a.placedSet.delete(item.id);a.binned.push(item);a.binnedSet.add(item.id)}endDrag();render();saveState()}
+function handleDrop(posId,pos){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='reorder'){const from=dragPayload.fromIdx;if(pos===from||pos===from+1){endDrag();render();return}const[item]=a.ranked.splice(from,1);let to=pos;if(to>from)to--;a.ranked.splice(to,0,item)}else if(dragPayload.type==='restore'){const item=a.binned.splice(dragPayload.binIdx,1)[0];a.binnedSet.delete(item.id);a.ranked.splice(pos,0,{...parse(item.id),_jp:true});a.placedSet.add(item.id)}endDrag();render();saveState()}
+function handleBinDrop(posId){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='reorder'){const[item]=a.ranked.splice(dragPayload.fromIdx,1);a.placedSet.delete(item.id);a.binned.push(item);a.binnedSet.add(item.id)}endDrag();render();saveState()}
 
-function binPS(posId,id){if(state.submitted[posId])return;const a=archState[posId];if(a.placedSet.has(id)||a.binnedSet.has(id))return;a.binned.push(parse(id));a.binnedSet.add(id);render();saveState()}
-function addAllCat(posId){if(state.submitted[posId])return;const a=archState[posId];feedItems(posId).filter(f=>!f.done).forEach(item=>{a.ranked.push({...parse(item.id)});a.placedSet.add(item.id)});render();saveState()}
-function advanceCat(posId){const a=archState[posId],cats=catsFor(POSITIONS.find(p=>p.id===posId));for(let p=0;p<PHASES.length;p++)for(let c=0;c<cats.length;c++){const pi=(a.phaseIdx+p)%PHASES.length,ci=(p===0?a.catIdx+(c+1):c)%cats.length;if(cats[ci].ps.some(n=>{const id=n+(PHASES[pi].plus?'+':'');return!a.placedSet.has(id)&&!a.binnedSet.has(id)})){a.catIdx=ci;a.phaseIdx=pi;render();saveState();return}}}
-function clr(posId){if(state.submitted[posId])return;const a=archState[posId];a.ranked=[];a.binned=[];a.placedSet.clear();a.binnedSet.clear();a.catIdx=0;a.phaseIdx=0;render();saveState()}
+function resetBaseline(posId){if(state.submitted[posId])return;const baseline=BASELINES[posId]||[];const ranked=baseline.map(id=>parse(id)).filter(item=>PSD[item.name]);const binnedIds=(BASELINES_BINNED[posId]||[]);const binned=binnedIds.map(id=>parse(id)).filter(item=>PSD[item.name]);archState[posId]={ranked,binned,placedSet:new Set(ranked.map(r=>r.id)),binnedSet:new Set(binned.map(b=>b.id)),baselineOrder:archState[posId].baselineOrder};render();saveState()}
+function clr(posId){if(state.submitted[posId])return;archState[posId].ranked=[];archState[posId].binned=[];archState[posId].placedSet.clear();archState[posId].binnedSet.clear();render();saveState()}
 function switchTab(i){state.activeTab=i;render();saveState()}
-function copyRanking(targetId,sourceId){if(!sourceId||state.submitted[targetId])return;const srcA=archState[sourceId];if(!srcA.ranked.length)return;const tCats=catsFor(POSITIONS.find(p=>p.id===targetId)),avail=new Set();tCats.forEach(c=>c.ps.forEach(n=>{avail.add(pid(n,false));avail.add(pid(n,true))}));const a=archState[targetId];a.ranked=srcA.ranked.filter(item=>avail.has(item.id)).map(item=>({...parse(item.id)}));a.binned=srcA.binned.filter(item=>avail.has(item.id)).map(item=>({...parse(item.id)}));a.placedSet=new Set(a.ranked.map(r=>r.id));a.binnedSet=new Set(a.binned.map(b=>b.id));const cats=tCats;let found=false;for(let pi=0;pi<PHASES.length&&!found;pi++)for(let ci=0;ci<cats.length&&!found;ci++){if(cats[ci].ps.some(n=>{const id=n+(PHASES[pi].plus?'+':'');return!a.placedSet.has(id)&&!a.binnedSet.has(id)})){a.catIdx=ci;a.phaseIdx=pi;found=true}}render();saveState()}
+function copyRanking(targetId,sourceId){if(!sourceId||state.submitted[targetId])return;const srcA=archState[sourceId];if(!srcA.ranked.length)return;const a=archState[targetId];a.ranked=srcA.ranked.map(item=>({...parse(item.id)})).filter(item=>PSD[item.name]);a.binned=srcA.binned.map(item=>({...parse(item.id)})).filter(item=>PSD[item.name]);a.placedSet=new Set(a.ranked.map(r=>r.id));a.binnedSet=new Set(a.binned.map(b=>b.id));render();saveState()}
 function unlockArchetype(posId){state.submitted[posId]=false;render();saveState()}
 
-async function submitArchetype(posId){const name=document.getElementById('respondentName').value.trim(),a=archState[posId];if(!name||a.ranked.length<MIN_PS)return;const warns=getWarnings(posId,true);if(warns.baseAbovePlus>0||warns.unpaired.length>0)return;const pos=POSITIONS.find(p=>p.id===posId),btn=document.getElementById(`sb_${posId}`);if(btn){btn.classList.add('sending');btn.textContent='Sending...'}state.submitted[posId]=true;state.nameLocked=true;const nameInput=document.getElementById('respondentName');nameInput.disabled=true;nameInput.style.opacity='0.5';saveState();const doneCount=POSITIONS.filter(p=>state.submitted[p.id]).length,totalCount=POSITIONS.length;const rankList=a.ranked.slice(0,20).map((item,idx)=>`**${idx+1}.** ${item.id}`).join('\n'),more=a.ranked.length>20?`\n_...and ${a.ranked.length-20} more_`:'',binnedList=a.binned.length>0?`\n\n**Binned (${a.binned.length}):** ${a.binned.map(b=>b.id).join(', ')}`:'';const embed={title:`📊 ${pos.name}`,description:`**${name}** submitted rankings (${doneCount}/${totalCount} archetypes)\n\n${rankList}${more}${binnedList}`,color:parseInt(pos.accent.replace('#',''),16),footer:{text:`${a.ranked.length} ranked · ${a.binned.length} binned`},timestamp:new Date().toISOString()};const csv=buildCumulativeCSV(),csvBlob=new Blob([csv],{type:'text/csv'}),csvFile=new File([csvBlob],`${name.replace(/\s+/g,'_')}_rankings_${doneCount}of${totalCount}.csv`,{type:'text/csv'});const formData=new FormData();formData.append('payload_json',JSON.stringify({embeds:[embed]}));formData.append('files[0]',csvFile);const fb=document.getElementById(`sf_${posId}`);try{const resp=await fetch(DISCORD_WEBHOOK,{method:'POST',body:formData});if(resp.ok){if(fb){fb.className='submit-feedback success';fb.textContent='✓ Submitted and sent to server'}}else throw new Error(`HTTP ${resp.status}`)}catch(err){console.warn('Discord send failed:',err);if(fb){fb.className='submit-feedback error';fb.textContent='⚠ Saved locally but server send failed — data is safe'}}setTimeout(()=>{const nextIdx=POSITIONS.findIndex(p=>!state.submitted[p.id]);if(nextIdx!==-1)state.activeTab=nextIdx;render()},1000)}
+async function submitArchetype(posId){const name=document.getElementById('respondentName').value.trim(),a=archState[posId];if(!name||a.ranked.length<MIN_PS)return;const warns=getWarnings(posId,true);if(warns.baseAbovePlus>0||warns.unpaired.length>0)return;const pos=POSITIONS.find(p=>p.id===posId),btn=document.getElementById(`sb_${posId}`);if(btn){btn.classList.add('sending');btn.textContent='Sending...'}state.submitted[posId]=true;state.nameLocked=true;const nameInput=document.getElementById('respondentName');nameInput.disabled=true;nameInput.style.opacity='0.5';saveState();const doneCount=POSITIONS.filter(p=>state.submitted[p.id]).length,totalCount=POSITIONS.length,changes=countChanges(posId);const rankList=a.ranked.slice(0,20).map((item,idx)=>`**${idx+1}.** ${item.id}`).join('\n'),more=a.ranked.length>20?`\n_...and ${a.ranked.length-20} more_`:'',binnedList=a.binned.length>0?`\n\n**Binned (${a.binned.length}):** ${a.binned.map(b=>b.id).join(', ')}`:'';const embed={title:`📊 ${pos.name}`,description:`**${name}** submitted rankings (${doneCount}/${totalCount} archetypes)\n**Changes from baseline:** ${changes}\n\n${rankList}${more}${binnedList}`,color:parseInt(pos.accent.replace('#',''),16),footer:{text:`${a.ranked.length} ranked · ${a.binned.length} binned · ${changes} changes`},timestamp:new Date().toISOString()};const csv=buildCumulativeCSV(),csvBlob=new Blob([csv],{type:'text/csv'}),csvFile=new File([csvBlob],`${name.replace(/\s+/g,'_')}_rankings_${doneCount}of${totalCount}.csv`,{type:'text/csv'});const formData=new FormData();formData.append('payload_json',JSON.stringify({embeds:[embed]}));formData.append('files[0]',csvFile);const fb=document.getElementById(`sf_${posId}`);try{const resp=await fetch(DISCORD_WEBHOOK,{method:'POST',body:formData});if(resp.ok){if(fb){fb.className='submit-feedback success';fb.textContent='✓ Submitted and sent to server'}}else throw new Error(`HTTP ${resp.status}`)}catch(err){console.warn('Discord send failed:',err);if(fb){fb.className='submit-feedback error';fb.textContent='⚠ Saved locally but server send failed — data is safe'}}setTimeout(()=>{const nextIdx=POSITIONS.findIndex(p=>!state.submitted[p.id]);if(nextIdx!==-1)state.activeTab=nextIdx;render()},1000)}
 
 function downloadAll(){const name=document.getElementById('respondentName').value.trim(),csv=buildCumulativeCSV(),blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${name.replace(/\s+/g,'_')}_all_rankings.csv`;a.click();URL.revokeObjectURL(url)}
 
-document.addEventListener('dragover',e=>{if(!isDragging)return;const posId=POSITIONS[state.activeTab]?.id;if(!posId)return;const area=document.getElementById(`ra_${posId}`);if(!area)return;const r=area.getBoundingClientRect();if(e.clientX<r.left-10||e.clientX>r.right+10||e.clientY<r.top-10||e.clientY>r.bottom+10)clearHot(posId)});
+document.addEventListener('dragover',e=>{if(!isDragging)return;const posId=POSITIONS[state.activeTab]?.id;if(!posId)return;const area=document.getElementById(`ra_${posId}`);if(!area)return;const r=area.getBoundingClientRect();if(e.clientX<r.left-20||e.clientX>r.right+20||e.clientY<r.top-20||e.clientY>r.bottom+20)clearHot(posId)});
 document.getElementById('respondentName').addEventListener('input',()=>{renderPanels();saveState()});
 let resizeT;window.addEventListener('resize',()=>{clearTimeout(resizeT);resizeT=setTimeout(render,100)});
 const loaded=loadState();if(loaded)showSave('Previous session restored');render();
