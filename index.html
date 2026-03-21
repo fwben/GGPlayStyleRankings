@@ -93,11 +93,11 @@
   .btn-reset-baseline { background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 8px; font-size: 10px; color: rgba(255,255,255,0.4); cursor: pointer; font-family: 'JetBrains Mono', monospace; }
   .btn-reset-baseline:hover { color: var(--gg-orange); border-color: rgba(245,158,11,0.3); }
   .changes-badge { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--gg-orange); font-weight: 600; }
-  .rank-area { display: flex; flex-wrap: wrap; align-items: flex-start; min-height: 60px; gap: 0; }
+  .rank-area { display: flex; flex-wrap: wrap; align-items: flex-start; min-height: 60px; gap: 3px; }
 
-  .slot { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; position: relative; }
-  .slot-num { font-size: 9px; font-family: 'JetBrains Mono', monospace; font-weight: 700; height: 16px; line-height: 16px; text-align: center; width: 62px; border-radius: 3px 3px 0 0; }
-  .tile { width: 62px; height: 62px; position: relative; border-radius: 0 0 6px 6px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; cursor: grab; transition: background .15s, box-shadow .15s, opacity .15s, transform .15s; }
+  .slot { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; position: relative; gap: 0; }
+  .slot-num { font-size: 9px; font-family: "JetBrains Mono", monospace; font-weight: 700; height: 16px; line-height: 16px; text-align: center; width: 62px; border-radius: 0; }
+  .tile { width: 62px; height: 62px; position: relative; border-radius: 0 0 6px 6px; overflow: hidden; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; cursor: grab; transition: background .15s, box-shadow .15s, opacity .15s, transform .15s; }
 
   /* Drop zones as overlays on left/right of each slot */
   .slot .dz-left, .slot .dz-right { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 15; display: none; }
@@ -127,7 +127,7 @@
 
   /* Category accent line on tiles */
   .tile::after {
-    content: ''; position: absolute; bottom: 0; left: 6px; right: 6px;
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
     height: 2px; border-radius: 1px; opacity: 0.5; transition: opacity .15s;
   }
   .tile:hover::after { opacity: 0.8; }
@@ -140,6 +140,9 @@
 
   .tile .tile-tip { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); padding: 2px 7px; border-radius: 3px; background: rgba(0,0,0,.95); font-size: 8px; color: rgba(255,255,255,.8); white-space: nowrap; pointer-events: none; z-index: 20; display: none; font-family: 'JetBrains Mono', monospace; }
   .tile:hover .tile-tip { display: block; }
+  .tile-moved { position: absolute; top: 1px; right: 2px; font-size: 7px; line-height: 1; pointer-events: none; z-index: 5; font-family: "JetBrains Mono", monospace; font-weight: 700; }
+  .tile-moved.up { color: rgba(46,204,113,0.7); }
+  .tile-moved.down { color: rgba(232,68,46,0.7); }
   .tile.just-placed { animation: placed .35s ease-out; }
   @keyframes placed { 0% { background: rgba(232,68,46,.3); transform: scale(1.08); } 100% { background: rgba(255,255,255,.04); transform: scale(1); } }
   .tile.warn { box-shadow: inset 0 0 0 2px rgba(245,158,11,0.7); animation: warnTile 1.5s ease-in-out infinite; }
@@ -164,6 +167,12 @@
   .bin-tile.warn { box-shadow: inset 0 0 0 2px rgba(245,158,11,0.55); opacity: .65; }
   .bin-tile .bt-tip { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); padding: 2px 6px; border-radius: 3px; background: rgba(0,0,0,.95); font-size: 7px; color: rgba(255,255,255,.6); white-space: nowrap; pointer-events: none; z-index: 20; display: none; font-family: 'JetBrains Mono', monospace; }
   .bin-tile:hover .bt-tip { display: block; }
+
+  /* ── Baseline view indicator ── */
+  .baseline-banner { padding: 6px 12px; border-radius: 6px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); font-size: 11px; color: rgba(245,158,11,0.8); font-family: 'JetBrains Mono', monospace; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .baseline-banner button { background: none; border: 1px solid rgba(245,158,11,0.3); border-radius: 4px; padding: 2px 10px; font-size: 10px; color: rgba(245,158,11,0.7); cursor: pointer; font-family: 'JetBrains Mono', monospace; }
+  .baseline-banner button:hover { color: #f59e0b; border-color: rgba(245,158,11,0.5); }
+  .btn-reset-baseline.viewing { background: rgba(245,158,11,0.15); color: #f59e0b; border-color: rgba(245,158,11,0.4); }
 
   /* ── Submit ── */
   .submit-area { margin-top: 18px; }
@@ -205,7 +214,7 @@
 </head>
 <body>
 <div class="header"><div class="header-inner"><div class="header-left"><div class="header-brand"><img src="https://www.fut.gg/public-assets/logo.png" alt="FUT.GG" style="height:28px"><span class="header-badge">GG Rating</span></div><h1>PlayStyle Importance Ranking</h1><p>Thank you for taking part in the FUT.GG PlayStyle survey! We've pre-ranked every PlayStyle — adjust the order based on your expertise. Drag to reorder, drag to bin for "No Benefit". 🙏</p></div><a href="https://discord.com/users/268544974654668800" target="_blank" class="contact-btn"><svg width="20" height="15" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.3 37.3 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.7 9 .2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4c-1.8 1-3.6 1.8-5.5 2.6a.2.2 0 00-.1.3 47.6 47.6 0 003.6 5.9.2.2 0 00.3.1 58.6 58.6 0 0017.7-9v-.1c1.4-15-2.3-28.4-9.8-40.1a.2.2 0 00-.1-.1zM23.7 37.3c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.8 7.1-6.3 7.1zm23.2 0c-3.5 0-6.3-3.2-6.3-7.1s2.8-7.1 6.3-7.1 6.4 3.2 6.3 7.1c0 3.9-2.7 7.1-6.3 7.1z"/></svg>Questions? Contact Ben</a></div></div>
-<div style="max-width:1300px;margin:16px auto 0;padding:0 32px;"><div style="padding:14px 18px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;"><strong style="color:#f59e0b;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">⚠ IMPORTANT — PLEASE READ</strong><br><strong style="color:#fff;">This is our baseline ranking — adjust it based on your expertise:</strong><br><span style="opacity:0.85">• PlayStyle+ is always ranked above its base version (you don't need to consider limited PS+ slots)</span><br><span style="opacity:0.85">• Drag PlayStyles to reorder, or drag to the "No Benefit" bin if they're irrelevant</span><br><span style="opacity:0.85">• The coloured lines under each tile show the category — use the legend to identify them</span></div></div>
+<div style="max-width:1300px;margin:16px auto 0;padding:0 32px;"><div style="padding:14px 18px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;"><strong style="color:#f59e0b;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;">⚠ IMPORTANT — PLEASE READ</strong><br><strong style="color:#fff;">This is our baseline ranking — adjust it based on your expertise:</strong><br><span style="opacity:0.85">• PlayStyle+ is always ranked above its base version (you don't need to consider limited PS+ slots)</span><br><span style="opacity:0.85">• Drag PlayStyles to reorder, or drag to the "No Benefit" bin if they're irrelevant</span></div></div>
 <div class="progress-area"><div class="progress-label"><span id="progressLabel"></span><span id="progressPct" style="color:var(--gg-red);font-weight:700"></span></div><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div></div>
 <div class="save-status" id="saveStatus"></div>
 <div class="container"><div class="name-bar"><label>Your Name</label><input type="text" id="respondentName" placeholder="e.g. ProPlayer123"></div><div class="tabs" id="tabs"></div><div id="panels"></div><div class="completion-banner" id="completionBanner"><h3>All archetypes submitted ✓</h3><p id="completionText"></p><button class="btn-download" onclick="downloadAll()">Download Backup (CSV)</button></div></div>
@@ -213,7 +222,7 @@
 
 <script>
 const DISCORD_WEBHOOK="https://discord.com/api/webhooks/1477373917030252576/J4KqVpeQFvfBdy3WQ82lGZIWI7TUivtSGulx_vM0Qqc23om7WDTcQwTszNaubqJrEp0r";
-const MIN_PS=30, STORAGE_KEY="futgg_ps_ranking_v9d";
+const MIN_PS=30, STORAGE_KEY="futgg_ps_ranking_v9g";
 const IMG="https://game-assets.fut.gg/cdn-cgi/image/quality=85,format=auto,width=180/2026/play-styles";
 const PSD={"Finesse Shot":{img:"0.2",cat:"SCORING"},"Chip Shot":{img:"1.2",cat:"SCORING"},"Power Shot":{img:"2.2",cat:"SCORING"},"Dead Ball":{img:"3.2",cat:"SCORING"},"Acrobatic":{img:"25.2",cat:"SCORING"},"Low Driven":{img:"34.3",cat:"SCORING"},"Game Changer":{img:"37.3",cat:"SCORING"},"Precision Header":{img:"39.3",cat:"SCORING"},"Incisive Pass":{img:"5.3",cat:"PASSING"},"Pinged Pass":{img:"6.2",cat:"PASSING"},"Long Ball Pass":{img:"7.2",cat:"PASSING"},"Tiki Taka":{img:"8.2",cat:"PASSING"},"Whipped Pass":{img:"9.2",cat:"PASSING"},"Inventive":{img:"38.3",cat:"PASSING"},"Jockey":{img:"10.2",cat:"DEFENDING"},"Block":{img:"11.2",cat:"DEFENDING"},"Intercept":{img:"12.2",cat:"DEFENDING"},"Anticipate":{img:"13.2",cat:"DEFENDING"},"Slide Tackle":{img:"14.2",cat:"DEFENDING"},"Aerial Fortress":{img:"35.3",cat:"DEFENDING"},"Technical":{img:"16.2",cat:"BALL CONTROL"},"Rapid":{img:"17.2",cat:"BALL CONTROL"},"First Touch":{img:"19.2",cat:"BALL CONTROL"},"Trickster":{img:"20.2",cat:"BALL CONTROL"},"Press Proven":{img:"21.2",cat:"BALL CONTROL"},"Bruiser":{img:"15.2",cat:"PHYSICAL"},"Quick Step":{img:"22.2",cat:"PHYSICAL"},"Relentless":{img:"23.2",cat:"PHYSICAL"},"Long Throw":{img:"26.2",cat:"PHYSICAL"},"Enforcer":{img:"36.3",cat:"PHYSICAL"},"Far Throw":{img:"28.3",cat:"GOALKEEPING"},"Footwork":{img:"29.3",cat:"GOALKEEPING"},"Cross Claimer":{img:"30.3",cat:"GOALKEEPING"},"Rush Out":{img:"31.3",cat:"GOALKEEPING"},"Far Reach":{img:"32.3",cat:"GOALKEEPING"},"Deflector":{img:"33.3",cat:"GOALKEEPING"}};
 
@@ -254,7 +263,9 @@ function pid(n,plus){return n+(plus?'+':'')}
 
 let state={activeTab:0,submitted:{},nameLocked:false},archState={};
 let gc=0,dragPayload=null,isDragging=false;
-let animatedTabs = new Set(); // Track which tabs have been animated
+let animatedTabs = new Set();
+let viewingBaseline = false;
+let suppressHL = false; // Track which tabs have been animated
 
 // GK bins — PlayStyles with no benefit for Goalkeeper
 const BASELINES_BINNED = {
@@ -273,7 +284,9 @@ POSITIONS.forEach(p=>{
     binned: binned,
     placedSet: new Set(ranked.map(r=>r.id)),
     binnedSet: new Set(binned.map(b=>b.id)),
-    baselineOrder: [...baseline]
+    baselineOrder: [...baseline],
+    baselineBinned: [...binnedIds],
+    movedSet: new Set()
   };
 });
 
@@ -324,7 +337,7 @@ function showSave(msg){const el=document.getElementById('saveStatus');el.textCon
 function buildCumulativeCSV(){const name=document.getElementById('respondentName').value.trim();let rows=['Respondent,Archetype,Rank,PlayStyle,Category,IsPlus'];POSITIONS.forEach(pos=>{if(state.submitted[pos.id]){archState[pos.id].ranked.forEach((item,idx)=>{rows.push(`${name},${pos.name},${idx+1},${item.id.replace(/,/g,'')},${item.cat},${item.plus?'TRUE':'FALSE'}`)})}});return rows.join('\n')}
 
 function renderProgress(){const t=POSITIONS.length,d=POSITIONS.filter(p=>state.submitted[p.id]).length,pct=Math.round((d/t)*100);document.getElementById('progressLabel').textContent=`${d} / ${t} archetypes submitted`;document.getElementById('progressPct').textContent=`${pct}%`;document.getElementById('progressFill').style.width=`${pct}%`}
-function renderTabs(){document.getElementById('tabs').innerHTML=POSITIONS.map((p,i)=>{const active=i===state.activeTab;let bg='rgba(255,255,255,0.06)',tc='rgba(255,255,255,0.3)';const hasChanges=archState[p.id].ranked.some((r,idx)=>r.id!==archState[p.id].baselineOrder[idx])||archState[p.id].binned.length>0;let dot='transparent';if(state.submitted[p.id]){dot='#2ecc71';bg='rgba(46,204,113,0.25)';tc='#2ecc71'}else if(hasChanges){dot='#d4af37';bg='rgba(212,175,55,0.25)';tc='#d4af37'}if(active){bg=state.submitted[p.id]?'rgba(46,204,113,0.35)':hasChanges?'rgba(212,175,55,0.35)':'#6b7280';tc='#fff'};return`<div class="tab ${active?'active':''}" onclick="switchTab(${i})"><span class="tab-badge" style="background:${bg};color:${tc}">${p.label}</span><span class="tab-label">${p.name}</span><span class="tab-dot" style="background:${dot}"></span></div>`}).join('')}
+function renderTabs(){document.getElementById('tabs').innerHTML=POSITIONS.map((p,i)=>{const active=i===state.activeTab;let bg='rgba(255,255,255,0.06)',tc='rgba(255,255,255,0.3)';const hasChanges=archState[p.id].ranked.some((r,idx)=>r.id!==archState[p.id].baselineOrder[idx])||archState[p.id].binned.map(b=>b.id).join(',')!==(archState[p.id].baselineBinned||[]).join(',');let dot='transparent';if(state.submitted[p.id]){dot='#2ecc71';bg='rgba(46,204,113,0.25)';tc='#2ecc71'}else if(hasChanges){dot='#d4af37';bg='rgba(212,175,55,0.25)';tc='#d4af37'}if(active){bg=state.submitted[p.id]?'rgba(46,204,113,0.35)':hasChanges?'rgba(212,175,55,0.35)':'#6b7280';tc='#fff'};return`<div class="tab ${active?'active':''}" onclick="switchTab(${i})"><span class="tab-badge" style="background:${bg};color:${tc}">${p.label}</span><span class="tab-label">${p.name}</span><span class="tab-dot" style="background:${dot}"></span></div>`}).join('')}
 
 function renderPanels(){
   gc=0;
@@ -340,15 +353,14 @@ function renderPanels(){
     if(!state.submitted[pos.id]&&others.length>0){const opts=others.map(p=>`<option value="${p.id}">${p.name} (${archState[p.id].ranked.length})</option>`).join('');copyHTML=`<div class="copy-ranking-box"><span class="copy-label">⚡ Copy from</span><select onchange="copyRanking('${pos.id}',this.value);this.selectedIndex=0"><option value="">Select...</option>${opts}</select></div>`}
     const topBar=`<div class="top-bar"><div class="archetype-desc">${pos.roles.map(r=>`<span class="archetype-role">${r}</span>`).join('')}</div>${copyHTML}</div>`;
 
-    // Category legend
-    const catNames = pos.isGK ? ["GOALKEEPING","SCORING","PASSING","DEFENDING","BALL CONTROL","PHYSICAL"] : ["SCORING","PASSING","DEFENDING","BALL CONTROL","PHYSICAL"];
-    const legendHTML = `<div class="cat-legend"><span class="cat-legend-title">Categories</span>${catNames.map(c=>`<div class="cat-legend-item"><div class="cat-legend-dot" style="background:${catColor(c)}"></div>${c}</div>`).join('')}</div>`;
 
+
+    const baselineBannerHTML=viewingBaseline&&!state.submitted[pos.id]?'<div class="baseline-banner"><span>Viewing baseline order</span><button onclick="viewBaseline(\''+pos.id+'\')">Back to your ranking</button></div>':'';
     const rankHTML=renderRankHTML(pos.id,warns,shouldAnimate);
     const binHTML=renderBinHTML(pos.id,warns);
     const subHTML=renderSubmitHTML(pos.id,warns);
     const changesHTML = changes > 0 ? `<span class="changes-badge">${changes} change${changes!==1?'s':''}</span>` : '';
-    return`<div class="panel active">${topBar}${legendHTML}<div class="rank-lbl"><span>Ranking — ${a.ranked.length} ${changesHTML}</span><div class="rank-btns">${!state.submitted[pos.id]?`<button class="btn-reset-baseline" onclick="resetBaseline('${pos.id}')">↺ Reset baseline</button>`:''}${a.ranked.length>0&&!state.submitted[pos.id]?`<button class="btn-clear" onclick="clr('${pos.id}')">Clear all</button>`:''}</div></div><div class="rank-area" id="ra_${pos.id}">${rankHTML}</div><div class="bin-section"><div class="bin-lbl"><span>No Benefit</span><span>${a.binned.length}</span></div><div class="bin-strip" id="bs_${pos.id}">${binHTML}</div></div><div class="submit-area">${subHTML}</div><div class="submit-feedback" id="sf_${pos.id}"></div></div>`;
+    return`<div class="panel active">${topBar}<div class="rank-lbl"><span>Ranking — ${a.ranked.length} ${changesHTML}</span><div class="rank-btns">${!state.submitted[pos.id]?`<button class="btn-reset-baseline${viewingBaseline?' viewing':''}" onclick="viewBaseline('${pos.id}')">👁 View baseline</button><button class="btn-reset-baseline" onclick="resetBaseline('${pos.id}')">↺ Reset to baseline</button>`:''}${a.ranked.length>0&&!state.submitted[pos.id]?`<button class="btn-clear" onclick="clr('${pos.id}')">Clear all</button>`:''}</div></div>${baselineBannerHTML}<div class="rank-area" id="ra_${pos.id}">${rankHTML}</div><div class="bin-section"><div class="bin-lbl"><span>No Benefit</span><span>${a.binned.length}</span></div><div class="bin-strip" id="bs_${pos.id}">${binHTML}</div></div><div class="submit-area">${subHTML}</div><div class="submit-feedback" id="sf_${pos.id}"></div></div>`;
   }).join('');
   POSITIONS.forEach((pos,i)=>{if(i!==state.activeTab)return;const bs=document.getElementById(`bs_${pos.id}`);if(!bs)return;bs.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';bs.classList.add('drag-over')});bs.addEventListener('dragleave',()=>bs.classList.remove('drag-over'));bs.addEventListener('drop',e=>{e.preventDefault();bs.classList.remove('drag-over');handleBinDrop(pos.id)})});
   bindRankDrag();bindBinDrag();bindPairHighlight();
@@ -356,24 +368,29 @@ function renderPanels(){
 }
 
 function renderRankHTML(posId,warns,animate){
-  const a=archState[posId],n=a.ranked.length,locked=state.submitted[posId];
+  const a=archState[posId];
+  const isBaseline=viewingBaseline&&!state.submitted[posId];
+  const sourceItems=isBaseline?(BASELINES[posId]||[]).map(id=>parse(id)).filter(item=>PSD[item.name]):a.ranked;
+  const n=sourceItems.length,locked=state.submitted[posId]||isBaseline;
+
   if(n===0)return`<div class="empty-state" id="ez_${posId}"><div class="es-main">All PlayStyles cleared</div><button class="btn-add-all-big" onclick="resetBaseline('${posId}')">↺ Reset to baseline</button></div>`;
   let h='';
   for(let i=0;i<n;i++){
-    const item=a.ranked[i],isW=warns.rank.has(item.id),cls=(item._jp?' just-placed':'')+(isW?' warn':'');
+    const item=sourceItems[i],isW=isBaseline?false:warns.rank.has(item.id),cls=(item._jp?' just-placed':'')+(isW?' warn':'');
     const t=n>1?i/(n-1):0;
     const bgA=Math.round((1-t*0.85)*100)/100;
     const txtA=Math.round((1-t*0.6)*100)/100;
     const cr=Math.round(232+(245-232)*t),cg=Math.round(68+(158-68)*t),cb=Math.round(46+(11-46)*t);
     const numStyle=`background:rgba(${cr},${cg},${cb},${bgA*0.45});color:rgba(255,255,255,${txtA});${i<1?'text-shadow:0 1px 2px rgba(0,0,0,0.3);font-size:10px':''}`;
-    const animDelay = animate ? `style="animation-delay:${i*15}ms"` : '';
+    const baseIdx=a.baselineOrder.indexOf(item.id);const wasMoved=!isBaseline&&a.movedSet&&a.movedSet.has(item.id);const movedDir=wasMoved&&baseIdx!==-1?(i<baseIdx?'up':i>baseIdx?'down':''):'';const movedHTML=movedDir?`<div class="tile-moved ${movedDir}">${movedDir==='up'?'\u25B2':'\u25BC'}</div>`:'';
+    const animDelay = animate ? `style="animation-delay:${i*60}ms"` : '';
     const animCls = animate ? ' anim' : '';
     const dzLeft = !locked ? `<div class="dz-left" data-drop-pos="${i}" data-posid="${posId}"></div>` : '';
     const dzRight = !locked ? `<div class="dz-right" data-drop-pos="${i+1}" data-posid="${posId}"></div>` : '';
-    h+=`<div class="slot${animCls}" data-idx="${i}" data-posid="${posId}" ${animDelay}>${dzLeft}${dzRight}<div class="slot-num" style="${numStyle}">${i+1}</div><div class="tile${cls}" data-idx="${i}" data-posid="${posId}" data-psid="${item.id}" data-cat="${item.cat}" draggable="${!locked}">${ic(item,42)}<div class="tile-tip">${item.id}</div></div></div>`;
+    h+=`<div class="slot${animCls}" data-idx="${i}" data-posid="${posId}" ${animDelay}>${dzLeft}${dzRight}<div class="slot-num" style="${numStyle}">${i+1}</div><div class="tile${cls}" data-idx="${i}" data-posid="${posId}" data-psid="${item.id}" data-cat="${item.cat}" draggable="${!locked}">${ic(item,42)}${movedHTML}<div class="tile-tip">${item.id}</div></div></div>`;
   }
   if(!locked)h+=`<div class="dz-end" data-drop-pos="${n}" data-posid="${posId}"><div class="dz-ghost"></div></div>`;
-  a.ranked.forEach(i=>{i._jp=false});
+  if(!isBaseline)a.ranked.forEach(i=>{i._jp=false});
   return h;
 }
 
@@ -395,16 +412,17 @@ function bindBinDrag(){const posId=POSITIONS[state.activeTab]?.id;if(!posId)retu
 function showDZ(posId){const area=document.getElementById(`ra_${posId}`);if(area)area.classList.add('dragging-active')}
 function hideDZ(posId){const area=document.getElementById(`ra_${posId}`);if(area)area.classList.remove('dragging-active')}
 function clearHot(posId){const area=document.getElementById(`ra_${posId}`);if(!area)return;area.querySelectorAll('.dz-left.hot, .dz-right.hot').forEach(d=>d.classList.remove('hot'));const dzEnd=area.querySelector('.dz-end.hot');if(dzEnd){dzEnd.classList.remove('hot');const g=dzEnd.querySelector('.dz-ghost');if(g)g.innerHTML=''}}
-function endDrag(){const posId=POSITIONS[state.activeTab]?.id;isDragging=false;dragPayload=null;if(posId){hideDZ(posId);clearHot(posId)}}
+function endDrag(){const posId=POSITIONS[state.activeTab]?.id;isDragging=false;dragPayload=null;suppressHL=true;setTimeout(()=>{suppressHL=false},150);if(posId){hideDZ(posId);clearHot(posId)}}
 
-function bindPairHighlight(){const els=document.querySelectorAll('[data-psid]');function partnerOf(id){return id.endsWith('+')?id.slice(0,-1):id+'+'}els.forEach(el=>{el.addEventListener('mouseenter',()=>{if(isDragging)return;const pid=partnerOf(el.dataset.psid);document.querySelectorAll(`[data-psid="${CSS.escape(pid)}"]`).forEach(p=>p.classList.add('pair-hl'))});el.addEventListener('mouseleave',()=>{document.querySelectorAll('.pair-hl').forEach(p=>p.classList.remove('pair-hl'))})})}
+function bindPairHighlight(){const els=document.querySelectorAll('[data-psid]');function partnerOf(id){return id.endsWith('+')?id.slice(0,-1):id+'+'}els.forEach(el=>{el.addEventListener('mouseenter',()=>{if(isDragging||suppressHL)return;el.classList.add('pair-hl');const pid=partnerOf(el.dataset.psid);document.querySelectorAll(`[data-psid="${CSS.escape(pid)}"]`).forEach(p=>p.classList.add('pair-hl'))});el.addEventListener('mouseleave',()=>{document.querySelectorAll('.pair-hl').forEach(p=>p.classList.remove('pair-hl'))})})}
 
-function handleDrop(posId,pos){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='reorder'){const from=dragPayload.fromIdx;if(pos===from||pos===from+1){endDrag();render();return}const[item]=a.ranked.splice(from,1);let to=pos;if(to>from)to--;a.ranked.splice(to,0,item)}else if(dragPayload.type==='restore'){const item=a.binned.splice(dragPayload.binIdx,1)[0];a.binnedSet.delete(item.id);a.ranked.splice(pos,0,{...parse(item.id),_jp:true});a.placedSet.add(item.id)}endDrag();render();saveState()}
-function handleBinDrop(posId){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='reorder'){const[item]=a.ranked.splice(dragPayload.fromIdx,1);a.placedSet.delete(item.id);a.binned.push(item);a.binnedSet.add(item.id)}endDrag();render();saveState()}
+function handleDrop(posId,pos){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='reorder'){const from=dragPayload.fromIdx;if(pos===from||pos===from+1){endDrag();render();return}const[item]=a.ranked.splice(from,1);let to=pos;if(to>from)to--;a.ranked.splice(to,0,item);if(!a.movedSet)a.movedSet=new Set();a.movedSet.add(item.id)}else if(dragPayload.type==='restore'){const item=a.binned.splice(dragPayload.binIdx,1)[0];a.binnedSet.delete(item.id);a.ranked.splice(pos,0,{...parse(item.id),_jp:true});a.placedSet.add(item.id);if(!a.movedSet)a.movedSet=new Set();a.movedSet.add(item.id)}endDrag();render();saveState()}
+function handleBinDrop(posId){if(!dragPayload||state.submitted[posId]){endDrag();return}const a=archState[posId];if(dragPayload.type==='reorder'){const[item]=a.ranked.splice(dragPayload.fromIdx,1);a.placedSet.delete(item.id);a.binned.push(item);a.binnedSet.add(item.id);if(!a.movedSet)a.movedSet=new Set();a.movedSet.add(item.id)}endDrag();render();saveState()}
 
-function resetBaseline(posId){if(state.submitted[posId])return;const baseline=BASELINES[posId]||[];const ranked=baseline.map(id=>parse(id)).filter(item=>PSD[item.name]);const binnedIds=(BASELINES_BINNED[posId]||[]);const binned=binnedIds.map(id=>parse(id)).filter(item=>PSD[item.name]);archState[posId]={ranked,binned,placedSet:new Set(ranked.map(r=>r.id)),binnedSet:new Set(binned.map(b=>b.id)),baselineOrder:archState[posId].baselineOrder};render();saveState()}
+function resetBaseline(posId){if(state.submitted[posId])return;if(!confirm('Reset to baseline? This will undo all your changes for this archetype.'))return;const baseline=BASELINES[posId]||[];const ranked=baseline.map(id=>parse(id)).filter(item=>PSD[item.name]);const binnedIds=(BASELINES_BINNED[posId]||[]);const binned=binnedIds.map(id=>parse(id)).filter(item=>PSD[item.name]);archState[posId]={ranked,binned,placedSet:new Set(ranked.map(r=>r.id)),binnedSet:new Set(binned.map(b=>b.id)),baselineOrder:archState[posId].baselineOrder,baselineBinned:archState[posId].baselineBinned,movedSet:new Set()};render();saveState()}
+function viewBaseline(posId){viewingBaseline=!viewingBaseline;render()}
 function clr(posId){if(state.submitted[posId])return;archState[posId].ranked=[];archState[posId].binned=[];archState[posId].placedSet.clear();archState[posId].binnedSet.clear();render();saveState()}
-function switchTab(i){state.activeTab=i;render();saveState()}
+function switchTab(i){state.activeTab=i;viewingBaseline=false;render();saveState()}
 function copyRanking(targetId,sourceId){if(!sourceId||state.submitted[targetId])return;const srcA=archState[sourceId];if(!srcA.ranked.length)return;const a=archState[targetId];a.ranked=srcA.ranked.map(item=>({...parse(item.id)})).filter(item=>PSD[item.name]);a.binned=srcA.binned.map(item=>({...parse(item.id)})).filter(item=>PSD[item.name]);a.placedSet=new Set(a.ranked.map(r=>r.id));a.binnedSet=new Set(a.binned.map(b=>b.id));render();saveState()}
 function unlockArchetype(posId){state.submitted[posId]=false;render();saveState()}
 
