@@ -389,11 +389,10 @@ document.getElementById('bonusTabs').innerHTML=bonusHTML}
 
 function renderPanels(){
   gc=0;
+  const activeList=state.bonusActive?BONUS_POSITIONS:POSITIONS;
   const activePos=activeList[state.activeTab];
   const shouldAnimate = activePos && !animatedTabs.has(activePos.id);
   if (shouldAnimate && activePos) animatedTabs.add(activePos.id);
-
-  const activeList=state.bonusActive?BONUS_POSITIONS:POSITIONS;
   document.getElementById('panels').innerHTML=activeList.map((pos,i)=>{
     if(i!==state.activeTab)return'<div class="panel"></div>';
     const a=archState[pos.id],warns=getWarnings(pos.id,false),changes=countChanges(pos.id);
